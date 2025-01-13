@@ -1,0 +1,44 @@
+# language
+zh-CN:
+  # items
+  menu:
+    links: 链接
+    travellings: 开往
+    webstack: 网址
+    friends: 友達
+    works: 作品
+
+zh-HK:
+  menu:
+    links: 链接
+    travellings: 開往
+    friends: 友達
+    webstack: 網址
+    works: 作品
+
+zh-TW:
+  menu:
+    links: 链接
+    travellings: 開往
+    friends: 友達
+    webstack: 網址
+    works: 作品
+
+
+en:
+  menu:
+    links: Links
+    travellings: Travellings
+    webstack: Web Stack
+    friends: Friends
+    works: Works
+
+
+ja:
+  menu:
+    links: リンク
+    travellings: 旅行
+    friends: 友達
+    webstack: ウェブスタック
+    works: さくひん
+

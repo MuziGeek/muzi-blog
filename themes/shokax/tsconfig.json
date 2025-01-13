@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "types": ["jquery","fancybox"],
+    "skipLibCheck": true
+  },
+  "typeAcquisition": {
+    "enable": true
+  },
+  "references": [
+    {
+      "path": "./source"
+    },
+    {
+      "path": "./scripts"
+    }
+  ]
+}

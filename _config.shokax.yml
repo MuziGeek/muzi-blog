@@ -1,0 +1,125 @@
+alternate: Muzi Blog
+
+
+
+open_graph:
+  #twitter_id:
+  #google_plus:
+  #fb_admins:
+  #fb_app_id:
+
+menu:
+  home: / || home
+  about: 
+    default: /about/ || user
+    works: /works/ || moon
+  posts:
+    default: / || feather
+    archives: /archives/ || list-alt
+    categories: /categories/ || th
+    tags: /tags/ || tags
+  links:  
+    default: /links/ || magic
+    friends: /friends/ || heart
+    webstack: /webstack/ || star
+
+# Social Links
+# Usage: `Key: permalink || icon || color`
+# Key is the link label showing to end users.
+# Value before `||` delimiter is the target permalink,
+# secend value is the name of Font icon.
+social:
+  github: https://github.com/MuziGeek || github || "#191717"
+  #google: https://plus.google.com/yourname || google
+  # twitter: https://twitter.com/amehime || twitter || "#00aff0"
+  zhihu: https://www.zhihu.com/people/mu-zi-jin-you-er-gun || zhihu || "#1e88e5"
+  music: https://music.163.com/#/user/home?id=3317014130 || cloud-music || "#e60026"
+  weibo: https://weibo.com/easymuzi || weibo || "#ea716e"
+  about: https://about.me/amehime || address-card || "#3b5998"
+  email: mailto:mz@easymuzi.cn || envelope || "#55acd5"
+  #facebook: https://www.facebook.com/yourname || facebook
+  #stackoverflow: https://stackoverflow.com/yourname || stack-overflow
+  #youtube: https://youtube.com/yourname || youtube
+  #instagram: https://instagram.com/yourname || instagram
+  #skype: skype:yourname?call|chat || skype
+  #douban: https://www.douban.com/people/yourname/ || douban
+
+sidebar:
+  # Sidebar Position.
+  position: right
+  # position: right
+  # Replace the default avatar image under <root>/source/_data/assets/ and set the url here.
+  avatar: avatar.jpg
+
+footer:
+  # Specify the date when the site was setup. If not defined, current year will be used.
+  since: 2024
+  count: true
+   # Beian ICP and gongan information for Chinese users. See: https://beian.miit.gov.cn, https://beian.mps.gov.cn
+  icp: # ICP备案
+    enable: true
+    # 请在登录后从 https://beian.mps.gov.cn/web/business/businessHome/website 下载对应图标
+    icon: "beian.png" #网安备案图片
+    icpnumber: "豫ICP备2024099312号" # ICP备案号
+    beian: "豫公网安备41052602000569号" # 网安备案号
+    recordcode: "41052602000569" # 网安备案链接中的recordcode参数
+
+ 
+
+post:
+  count: true
+
+
+# ---------------------------------------------------------------
+# Third Party Plugins & Services Settings
+# ---------------------------------------------------------------
+
+# https://waline.js.org/
+waline:
+  enable: true
+  serverURL: "https://waline.easymuzi.cn"
+  lang: "zh-CN"
+  locale: {} # https://waline.js.org/guide/features/i18n.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E8%AF%AD%E8%A8%80
+  emoji: # 表情包
+    - https://unpkg.com/@waline/emojis@1.0.1/weibo
+    - https://unpkg.com/@waline/emojis@1.0.1/alus
+    - https://unpkg.com/@waline/emojis@1.0.1/bilibili
+    - https://unpkg.com/@waline/emojis@1.0.1/qq
+    - https://unpkg.com/@waline/emojis@1.0.1/tieba
+    - https://unpkg.com/@waline/emojis@1.0.1/tw-emoji
+  meta: # 可以填写的内容
+    - nick
+    - mail
+    - link
+  requiredMeta: # 必须填写的内容
+    - nick
+    - mail
+  wordLimit: 0 # 字数限制,0为不限制
+  pageSize: 10 # 每页评论条数
+  pageview: false # 是否开启浏览量统计,可独立开启
+
+
+# bgm
+audio:
+   - title: 列表1
+     list:
+        - https://music.163.com/#/playlist?id=2943811283
+        - https://music.163.com/#/playlist?id=2297706586
+   - title: 列表2
+     list:
+        - https://music.163.com/#/playlist?id=2031842656
+
+# Dependencies: https://github.com/amehime/hexo-renderer-multi-markdown-it
+pangu: true
+
+# ---------------------------------------------------------------
+# analytics & SEO Settings
+# ---------------------------------------------------------------
+
+
+# Disable Baidu transformation on mobile devices.
+disable_baidu_transformation: true
+
+# Automatically add external URL with Base64 encrypt & decrypt.
+exturl: true
+
