@@ -1,18 +1,14 @@
 ---
-
-title: 面试训练营Day11
-
-date: 2025/01/05 20：46：25
-
+title: Day11
+date: 2025-01-15 14:44:39
 categories:
-
-- [学习成长, 编程, 面试训练营]
-
+  - - 学习成长
+    - 编程
+    - 面试训练营
 tags:
-
+  - Redis
 ---
-**2025-01-03**🌱上海: ⛅️  🌡️+11°C 🌬️↙12km/h
-
+**2025-01-15**🌱上海: ☀️   🌡️+6°C 🌬️↓18km/h
 ## Redis 中跳表的实现原理是什么？
 
 ### 总结分析
@@ -28,39 +24,28 @@ tags:
 #### 扩展知识
 
 首先回顾下单链表，对于有序链表，若要查找其中某个数据，只能从头到尾遍历，这种方式查找效率低，时间复杂度为 O (n)。
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735884501790-2fda65b0-27d1-4362-b7f1-f2dfb913953e.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144531863.png)
 在单链表中，查找一个数需从头结点开始依次遍历匹配，时间复杂度为 O (n)；插入一个数时，先从头遍历找到合适位置再插入，时间复杂度同样是 O (n)。这表明单链表在查找和插入操作上效率相对较低，随着链表长度增加，耗时会线性增长。
 
 为了提高查询效率，对有序链表进行改造，先对链表中每两个节点建立第一级索引。如下图
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735885461971-cbba0f71-11bc-4507-aa88-710ac260ff10.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144541995.png)
 假设我们要找15这个值，跳表是的查询流程如下图
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735885965964-3e2d9ba5-8736-49cc-b330-38f0cde3291f.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144551262.png)
 加来一层索引之后，查找一个结点需要遍的结点个数减少了，也就是说查找效率提高了，同理再加一级索引。
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735885988796-941f01c1-926f-46c7-b3e8-7208cba9a88a.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144600616.png)
 从图中能看出查找效率得到提升，在数据量少的例子中已有体现；当存在大量数据时，通过增加多级索引，查找效率可获得明显提升
-
 #### 插入实现
 
 以上知识跳表查询的实现，插入的实现如下图：
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735886384175-9703043e-e01d-4dff-9f15-1fa4a3b10d48.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144623747.png)
 ### Redis 中的跳表实现解析（通过源码进一步分析）
 
-#### 1. 基本概念
+#### 1.1. 基本概念
 
 - **跳表**：是一种基于链表的多层数据结构，每一层都是一个有序的链表。最底层的链表包含所有的元素，而高层的链表是底层链表的 “快速通道”，通过跳过一些节点来加快查找速度。
 - **节点**：跳表中的每个节点包含多个字段，其中最重要的是指向其他节点的指针数组（用于不同层次的链表），以及存储的数据和分值（用于排序）。
 
-#### 2. 结构示例
+#### 1.2. 结构示例
 
 ##### 跳表节点
 
@@ -86,9 +71,7 @@ typedef struct zskiplistNode {
 ```
 
 **结构如下图：**
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735888983535-9c8318df-bf72-45c3-9f14-bc93e534e08a.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144638645.png)
 分析一下几个属性的含义：
 
 - **ele**：采用 Redis 字符串底层实现 sds，用于存储数据。
@@ -97,21 +80,18 @@ typedef struct zskiplistNode {
 - **level**：zskiplistNode 的结构体数组，数组索引即层级索引；其中 forward 指向同一层的下一个跳表节点，span 表示距离下一个节点的步数 。
 
 跳表是有层级关系的链表，每层可有多个节点，节点间通过指针连接，这依赖跳表节点结构体中的 `zskiplistLevel` 结构体类型的 `level` 数组。`level` 数组每个元素代表跳表一层，如 `level[0]` 为第一层，`level[1]` 为第二层。`zskiplistLevel` 结构体定义了指向下一个跳表节点的指针和跨度，跨度用于记录节点间距离。
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735888409321-e96e2cfb-4124-4173-b6be-fceb06b6f03a.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144649203.png)
 - 跨度与遍历操作并无关联，遍历依靠前向指针就能完成。
 - 跨度用于计算节点在跳表中的排位，做法是在从头节点到目标节点的查询路径上，累加沿途各层跨度。
 - 以节点 3 为例，经过一层（L2）且跨度为 3，其排位是 3。
 - 这里需要指出的是，表头节点是一个包含了所有层的虚拟节点（不包含任何数据），每一层中表头节点的forward都指向该层的第一个真实节点。
 
 上面是跳表节点的具体实现，接下来我们看下跳表的结构实现。
-
 ##### 跳表
 
 先看下代码实现
 
-```
+```c
 typedef struct zskiplist{
 struct zskiplistNode *header, *tail,
 unsigned long length,
@@ -136,9 +116,7 @@ int level;
 - 若上述两个条件都不满足或下一个节点为空，使用当前遍历节点 level 数组里的下一层指针，跳到下一层继续查找 。
 
 **如图**：
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735888409321-e96e2cfb-4124-4173-b6be-fceb06b6f03a.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144717858.png)
 查找「元素:abcd，权重：4」的节点时：
 
 - 从跳表头节点最高层 L2 开始，指向「元素:abc，权重：3」节点，因其权重小于目标权重，访问下一个节点，却发现下一个节点为空。
@@ -149,7 +127,7 @@ int level;
 
 先上源码
 
-```
+```c
 zskiplist *zslCreate(void) {
     int j;
     zskiplist *zsl;
@@ -181,9 +159,9 @@ zskiplist *zslCreate(void) {
 
 **其中，**`**ZSKIPLIST_MAXLEVEL**` **定义的是最高的层数，Redis 7.0 定义为 32，Redis 5.0 定义为 64，Redis 3.0定义为 32。**
 
-##### 跳跃表的插入
+##### 跳表的插入
 
-```
+```c
 zskiplistNode *zslInsert(zskiplist *zsl, double score, robj *obj) {
  
     // 记录寻找元素过程中，每层能到达的最右节点
@@ -286,16 +264,14 @@ zskiplistNode *zslInsert(zskiplist *zsl, double score, robj *obj) {
 5. **更新其他节点的** `**span**` **值**：对于未触及的层，更新 `update` 节点的 `span` 值。
 6. **设置前后指针**：设置新节点的 `backward` 指针，若新节点有下一个节点，设置下一个节点的 `backward` 指针指向新节点；否则更新跳跃表的 `tail` 指针。
 7. **更新跳跃表长度**：跳跃表节点数量加一，返回插入的新节点指针。
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735890671435-c518fd15-b4a3-48ab-b810-bcf6a5db7322.png)
-
+![](https://cdn.easymuzi.cn/img/20250115144744394.png)
 **上面代码中有一个生成随机层数的函数**
 
 redis的跳跃表在插入节点时，会随机生成节点的层数，通过控制每一层的概率，控制每一层的节点个数，也就是保证第一层的节点个数，之后逐层增加
 
 这里面有一个宏定义ZSKIPLIST_P ，在源码中定义为了0.25，所以，上面这段代码，**生成n+1的概率是生成n的概率的4倍。**
 
-```
+```c
 int zslRandomLevel(void) {
     int level = 1;
     while ((random()&0xFFFF) < (ZSKIPLIST_P * 0xFFFF))
@@ -306,7 +282,7 @@ int zslRandomLevel(void) {
 
 **如果生成的新节点层数大于当前跳跃表的最大层数**，由于之前的遍历是从当前最大层数开始，多出来的层尚未获取 `update` 节点和 `rank`。因此需通过特定程序为这些多出来的层写入相应的 `rank` 和 `update` 节点。这一过程较为简单，多出来层的 `update` 节点为头节点，`rank` 都为 0 ，`span` 被设置为当前跳跃表的节点个数（为后续插入新节点时计算新节点的 `span` 做准备）。
 
-```
+```c
  if (level > zsl->level) {
         for (i = zsl->level; i < level; i++) {
             rank[i] = 0;
@@ -317,9 +293,9 @@ int zslRandomLevel(void) {
     }
 ```
 
-##### 遍历跳表
+##### 跳表的查询遍历
 
-```
+```c
     // 记录寻找元素过程中，每层能到达的最右节点
     zskiplistNode *update[ZSKIPLIST_MAXLEVEL], *x;
  
@@ -381,14 +357,11 @@ int zslRandomLevel(void) {
 - 在循环体中，将当前节点的 `span` 值累加到 `rank[i]` 中，以记录跨越的节点数，然后将 `x` 移动到下一个节点。
 
 - 内层 `while` 循环结束后，将当前层遍历到的最右节点存储到 `update[i]` 中
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735891473306-1db5a16d-a325-43ee-9028-65f8dc6e5701.png)
-
+![](https://cdn.easymuzi.cn/img/20250115144818672.png)
 ##### 跳表的删除
 
 老规矩 先上源码
-
-```
+```c
 /* 
  * 内部函数，被 zslDelete、zslDeleteRangeByScore 和 zslDeleteRangeByRank 使用
  * 功能：从跳跃表中删除指定节点，并更新相关节点的跨度和指针
@@ -481,9 +454,7 @@ int zslDelete(zskiplist *zsl, double score, sds ele, zskiplistNode **node) {
 
 1. `zslDeleteNode` 函数负责从跳跃表中删除指定节点，并更新相关节点的跨度和指针，同时根据情况调整跳跃表的层数和节点数。
 2. `zslDelete` 函数用于在跳跃表中查找具有特定分数和元素的节点，并调用 `zslDeleteNode` 函数进行删除操作，最后根据是否找到匹配节点返回相应的结果。
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735893179727-05f3768d-27c8-4994-8c81-cc91a3516481.png)
-
+![](https://cdn.easymuzi.cn/img/20250115144900011.png)
 ## Redis的Hash是什么？
 
 ### 总结分析
@@ -573,7 +544,7 @@ OK
 
 ### hashtable结构
 
-```
+```c
 typedef struct dictht {
     //哈希表数组
     dictEntry **table;
@@ -590,12 +561,10 @@ typedef struct dictht {
 2. `size`：哈希表的大小。
 3. `sizemask`：大小掩码，值为`size - 1`，与哈希值共同确定节点在哈希表中的位置（`index = hash & sizemask`）。
 4. `used`：已使用的节点数量 。
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735906457734-27c5983b-2205-4e64-83fb-59a09d23649c.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144935188.png)
 ### 哈希节点dictEntry结构
 
-```
+```c
 typedef struct dictEntry {
     //键值对中的键
     void *key;
@@ -617,7 +586,7 @@ typedef struct dictEntry {
 
 **联合体和结构体的区别及定义（大概了解即可）**
 
-```
+```c
 struct 结构体名 {
     数据类型 成员名1;
     数据类型 成员名2;
@@ -625,7 +594,7 @@ struct 结构体名 {
 };
 ```
 
-```
+```c
 union 联合体名 {
     数据类型 成员名1;
     数据类型 成员名2;
@@ -648,24 +617,19 @@ union 联合体名 {
 其实了解hashmap的底层原理，对于hash冲突都不陌生
 
 以一个有 8 个哈希桶的哈希表为例，说明不同键对应哈希桶的过程：key1 经哈希函数计算并对 8 取模得 1，对应哈希桶 1；key9、key10 分别对应哈希桶 1 和哈希桶 6 。如下图：
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735907279545-a99b7bc9-19ba-4b0f-a1c5-ad8e270b4783.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115144950175.png)
 Redis采用了链式哈希的方法来解决哈希冲突，这里应该和hashmap的原理一样。
 
 ### 链式哈希
 
 链式哈希解决哈希冲突的方式是：每个哈希表节点设 next 指针指向下一节点，可构成`单向链表`。同一哈希桶上的多个节点借此链表相连。如 key1 和 key9 经哈希计算落入同一哈希桶，key1 会通过 next 指针指向 key9 形成单向链表 。如下图：
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735907519695-ab29edda-03d9-40e4-9e8f-bd54d283e955.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115145003702.png)
 链式哈希存在局限性，随着链表长度增加，查询数据耗时会增加，其查询时间复杂度为 O (n)。解决此问题需进行 rehash（扩展哈希表大小），接下来将介绍 Redis 实现 rehash 的方式。
 
 ### rehash
 
 在介绍哈希表结构设计时，提到 Redis 用 `dictht` 结构体表示哈希表，而在实际使用中，Redis 定义了 `dict` 结构体，该结构体中包含两个哈希表（`ht[2]`）。
-
-```
+```c
 typedef struct dict {
     …
     //两个Hash表，交替使用，用于rehash操作
@@ -673,9 +637,7 @@ typedef struct dict {
     …
 } dict;
 ```
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735907858501-6e5a936f-291c-45b5-8f42-b049f0c7dee3.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115145044088.png)
 Redis 为解决哈希冲突及数组空间不足问题，采用双哈希表机制。当正在使用的哈希表节点数达到其数组长度时，会将另一个原本为空的哈希表的数组长度设为当前表的 2 倍，并把旧表节点迁移至新表，新表成为当前使用表，从而实现数组长度增长与冲突缓解，实际使用中始终保持一个表用于当前操作，另一个用于 rehash 操作。
 
 **流程如下**：
@@ -683,9 +645,7 @@ Redis 为解决哈希冲突及数组空间不足问题，采用双哈希表机�
 - 给「哈希表 2」分配比「哈希表 1」大一倍的空间
 - 将「哈希表 1」的数据迁移到「哈希表 2」中
 - 释放「哈希表 1」空间，把「哈希表 2」设为「哈希表 1」，并在「哈希表 2」新创建空白哈希表为下次 rehash 做准备
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735907992247-02577506-0975-4d9f-8b98-4d559b5dfc56.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115145059967.png)
 第二步可能会存在问题，当「哈希表 1」数据量巨大时，迁移数据至「哈希表 2」会因大量数据拷贝而可能阻塞 Redis，使其无法响应其他请求。所以接下来了解下渐进式rehash
 
 ### 渐进式rehash
@@ -707,7 +667,6 @@ Redis 为解决哈希冲突及数组空间不足问题，采用双哈希表机�
 - 当满足特定条件进行 rehash 时，新表大小是老表 `used` 的最近的一个 2 次方幂，如老表 `used = 1000`，新表大小为 1024。
 
 这种基于负载因子的动态调整机制，能根据数据量和哈希表状态自适应地优化哈希表性能，保持数据存储和检索的高效性。
-
 ## Redis Zset的实现原理是什么？
 
 ### 总结分析
@@ -736,16 +695,14 @@ Redis 中 ZSet 存储结构会根据元素数量动态调整。元素数量较�
 - ziplist 是由特殊编码的连续内存块组成的顺序存储结构，类似数组但内存连续存储。
 - 与数组不同，为节省内存，其每个元素所占内存大小可变，每个节点可存储整数或字符串。
 - 类似双向链表，不存储前后节点指针，而是存储上一节点长度和当前节点长度，以牺牲部分读写性能换取高效内存利用率，达到节约内存的目的。
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735910847962-1f218ce4-125d-4f47-98fb-fa1495bd2e5f.png)
-
+![](https://cdn.easymuzi.cn/img/20250115145138932.png)
 - **zlbytes**：记录了压缩列表占用的内存字节数，在对压缩列表进行内存重分配，或者计算zlend的位置时使用。它本身占了4个字节。
 - **zltail**：记录了尾节点（entry）至起始节点（entry）的偏移量。通过这个偏移量，可以快速确定最后一个entry节点的地址。
 - **zllen**：记录了entry节点的数量。当zllen的值小于65535时，这个值就表示节点的数量。当zllen的值大于65535时，节点的真实数量需要遍历整个压缩列表才能得出。
 - **entry**：压缩列表中所包含的每个节点。每个节点的长度根据该节点的内容来决定。
 - **zlend**：特殊值0XFF，标记了压缩列表的末端。表示该压缩列表到此为止。
 
-```
+```c
 typedef struct zlentry {
     unsigned int prevrawlensize; /*存储上一个节点长度的数值所需要的字节数*/
     unsigned int prevrawlen;     /* 上一个节点的长度 */
@@ -761,9 +718,7 @@ typedef struct zlentry {
 - entry 是链表中的节点，用于代表一个数据
 
 Redis 中虽定义了 zlentry 结构体，但因其存储小整数或短字符串时空间浪费严重（32 位机占 28 字节、64 位机占 32 字节），不符合 ziplist 提高内存利用率的设计初衷，所以在实际操作中并未使用该结构体，而是通过定义一些宏来处理 ziplist 相关操作。如下图
-
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1735911047488-ca096321-b559-4409-80e8-b029790f8dd6.png)
-
+![image.png](https://cdn.easymuzi.cn/img/20250115145155647.png)
 - prev_entry_len：记录**前驱节点的长度。**
 - encoding：记录**当前节点**的value成员的**数据类型以及长度。**
 - value：根据encoding来保存**字节数组或整数**。
