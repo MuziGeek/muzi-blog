@@ -1,9 +1,12 @@
 ---
 title: Day12
 date: 2025-01-15 14:52:35
-categories: 
-- [学习成长, 编程, 面试训练营]
+categories:
+  - - 学习成长
+    - 编程
+    - 面试训练营
 tags:
+  - Redis
 ---
 **2025-01-15**🌱上海: ☀️   🌡️+6°C 🌬️↓18km/h
 ## Redis 中如何保证缓存与数据库的数据一致性?
@@ -134,7 +137,7 @@ tags:
 #### 互斥锁代码示例
 
 **使用hashmap模拟redis缓存**
-```
+```java
 import java.util.HashMap;
 import java.util.Map;
 
@@ -199,7 +202,7 @@ Redis 中的 String 类型底层实现主要基于 SDS（Simple Dynamic String �
 
 先上源码
 
-```
+```c
 struct __attribute__ ((__packed__)) sdshdr64 {
     uint64_t len; /* used */
     uint64_t alloc; /* excluding the header and null terminator */
@@ -225,7 +228,7 @@ struct __attribute__ ((__packed__)) sdshdr64 {
 
 #### int编码
 
-```
+```c
 struct redisObject {
     unsigned type:4;      // 数据类型（字符串、哈希等）
     unsigned encoding:4;  // 编码类型（int、embstr、raw等）
@@ -237,7 +240,7 @@ struct redisObject {
 ![image.png](https://cdn.easymuzi.cn/img/20250115145623396.png)
 #### embstr编码
 
-```
+```c
 struct redisObject {
     unsigned type:4;       // 数据类型
     unsigned encoding:4;   // 编码类型，这里是 embstr
@@ -256,7 +259,7 @@ struct sdshdr {
 ![image.png](https://cdn.easymuzi.cn/img/20250115145638294.png)
 #### raw编码
 
-```
+```c
 struct redisObject {
     unsigned type:4;       // 数据类型
     unsigned encoding:4;   // 编码类型，这里是 raw
