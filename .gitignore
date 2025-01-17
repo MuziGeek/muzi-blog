@@ -1,9 +1,11 @@
 .DS_Store
 Thumbs.db
-db.json
+db.jsonshoka
 *.log
 node_modules/
 public/
 .deploy*/
 _multiconfig.yml
 .obsidian
+shokaxTemp/
+package-lock.json
