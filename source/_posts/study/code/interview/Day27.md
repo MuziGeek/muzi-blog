@@ -338,7 +338,8 @@ Every field declaration in the body of an interface is implicitly public, static
 3. 从java8开始，接口中允许有静态方法，比如说上面代码中的isWeixPay()方法。静态方法无法由实现类的对象调用，它只能通过接口名来调用，比如`PaymentInterface.isWeixPay(weixPay)`目的就是为了提供一种简单的机制，使我们不必创建对象就能调用方法。
 4. 接口中允许定义default方法，也是从java8开始的，比如上面代码的`printPayType（）`方法，始终由一个代码块组成，为实现该接口且不覆该方法的类提供默认实现。同时必须有方法体，否则会报错
 
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1737272640600-6a224222-b009-48c7-b672-c06d85fef4f9.png)
+![image.png](https://cdn.easymuzi.cn/img/20250120095400747.png)
+
 
 有点类似抽象中的普通方法，可以避免在所有的实现类中追加某个具体的方法时需要修改大量大实现类。
 
