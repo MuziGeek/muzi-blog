@@ -62,9 +62,14 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map: # edit for Theme.shoka
-  学习成长: study
+  笔记: note
   编程: code
+  生活: life
+  随笔: essays
   面试训练营: interview
+  软件: soft
+  学习工具: study-tool
+
 tag_map:
 
 # Metadata elements
