@@ -6,7 +6,8 @@
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server"
+    "server": "hexo server",
+    "install:puppeteer": "PUPPETEER_SKIP_DOWNLOAD=true pnpm i puppeteer"
   },
   "hexo": {
     "version": "7.3.0"
