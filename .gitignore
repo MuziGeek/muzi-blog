@@ -9,3 +9,4 @@ _multiconfig.yml
 .obsidian
 shokaxTemp/
 package-lock.json
+pnpm-lock.yaml
