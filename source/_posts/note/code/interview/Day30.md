@@ -15,23 +15,27 @@ tags:
 
 AQS内部主要维护了一个**volatile的int类型的state变量**和**一个FIFO队列**，在state=1的时候表示当前的锁已经被占有了，0表示未被占用。
 
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1737547615644-d3fd4cdd-f32f-4b98-adb4-c3032db40c5a.png)
+![image.png](https://cdn.easymuzi.cn/img/20250125003851646.png)
+
 
 **工作流程如下图所示：**
 
 **FIFO队列用来实现多线程的排队工作，当线程加锁失败时，该线程会被封装成一个Node节点置于队列尾部**
 
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1737548249049-351977e1-d2c6-4a7a-8dea-556ec6c69983.png)
+![image.png](https://cdn.easymuzi.cn/img/20250125003858637.png)
+
 
 当持有锁的线程释放锁时，AQS会将等待队列中的第一个线程唤醒，并让其重新尝试获取锁
 
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1737548532709-5b278251-991f-46ed-9657-2bb61033ed2c.png)
+![image.png](https://cdn.easymuzi.cn/img/20250125003941930.png)
+
+
 
 ### 同步状态-State
 
 AQS使用一个`volatile` int类型的成员变量来表示同步状态，在state=1的时候表示当前对象锁已经被占有了。它提供了三个基本方法来操作同步状态：`getState()`, `setState(int newState),` 和 `compareAndSetState(int expect, int update)`。这些方法允许在不同的同步实现中自定义资源的共享和独占方式。
 
-```
+```java
 // 同步状态
 private volatile int state;
 
@@ -56,7 +60,7 @@ protected final boolean compareAndSetState(int expect, int update) {
 
 AQS内部通过一个内部类Node来实现同步队列的功能的，当线程尝试获取资源失败时，AQS会将该线程包装成一个Node节点，然后将其插入到同步队列的尾部。在锁资源被释放的时候，队列头部的节点会尝试再次通过CAS获取资源，同时Node也用于构建条件队列，当线程需要等待某个条件时就会被加入到条件队列中，条件满足则会被转移回同步队列。
 
-```
+```java
 
 // Node类用于构建队列
 static final class Node {
@@ -95,7 +99,8 @@ private Node enq(final Node node) {
 
 **类的继承关系图**
 
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1737549746092-f26b915c-e779-41ad-9886-3f5bd4c44b03.png)
+![image.png](https://cdn.easymuzi.cn/img/20250125003929642.png)
+
 
 **AQS中的阻塞队列是一个CLH队列，CLH队列是一种用于实现自旋锁的有效数据结构。**
 
@@ -107,7 +112,7 @@ AQS总共有两种队列，分别是同步队列，用于实现锁的获取和�
 
 同步队列主要用于实现锁的获取和释放，比如我们常用的`ReentranLock`，就是基于同步队列来实现的，**它的实现原理较为简单：**
 
-```
+```java
 private Node addWaiter(Node mode) {
     Node node = new Node(Thread.currentThread(), mode);
     // 尝试快速路径：直接尝试在尾部插入节点
@@ -149,7 +154,7 @@ private Node enq(final Node node) {
 
 `ConditionObject`是AQS的一个内部类，用于实现条件变量。条件变量是并发编程中一种用于线程间通信的机制，它允许一个或多个线程在特定条件成立之前等待，同时释放相关的锁。这在某种程度上类似于对象监视器模式中的`wait()`和`notify()`方法，但提供了更灵活和更强大的控制。
 
-```
+```java
 
 public class ConditionObject implements Condition, java.io.Serializable {
     // 条件队列的首尾节点
@@ -161,7 +166,7 @@ public class ConditionObject implements Condition, java.io.Serializable {
 
 **它的主要实现原理如下：**
 
-```
+```java
 public final void await() throws InterruptedException {
     // 如果当前线程在进入此方法之前已经被中断了，则直接抛出InterruptedException异常。
     if (Thread.interrupted())
@@ -203,7 +208,7 @@ public final void await() throws InterruptedException {
 
 当线程调用了`Condition`的`await()`方法后，它会释放当前持有的锁，并且该线程会被加入到条件队列中等待。直到被另一线程的`signl()`（唤醒等待队列中的头节点对应的线程）或者`signlAll()`（唤醒所有等待的线程）方法唤醒或者被中断。
 
-```
+```java
 public final void signal() {
     if (!isHeldExclusively())
         throw new IllegalMonitorStateException();
@@ -241,7 +246,7 @@ private void doSignal(Node first) {
 同时在JDK21的发布，推出了虚拟线程，在虚拟线程中不建议使用`synchronized`**，**而是建议使用`ReentrantLock`。
 ### ReentranLock用法
 
-```
+```java
  private final ReentrantLock lock = new ReentrantLock();
 
     // lock() 方法：获取锁
@@ -266,7 +271,7 @@ private void doSignal(Node first) {
 - 在 `try` 块中执行受保护的代码操作。
 - `lock.unlock()`：在 `finally` 块中释放锁，确保无论代码块是否抛出异常，锁都能正常释放。
 
-```
+```java
 // tryLock() 方法：尝试获取锁，若能获取则立即返回 true，否则返回 false
     public void useTryLockMethod() {
         if (lock.tryLock()) {
@@ -291,7 +296,7 @@ private void doSignal(Node first) {
 - `lock.tryLock()`：尝试获取锁，如果锁可用，则立即获取并返回 `true`，否则返回 `false`。
 - 如果获取成功，在 `try` 块中执行受保护的操作，并在 `finally` 块中释放锁；如果失败，执行相应的失败处理逻辑。
 
-```
+```java
 // tryLock(long timeout, TimeUnit unit) 方法：在指定时间内尝试获取锁，能获取则返回 true，否则返回 false
     public void useTryLockWithTimeoutMethod() {
         try {
@@ -320,7 +325,7 @@ private void doSignal(Node first) {
 - `lock.tryLock(2, java.util.concurrent.TimeUnit.SECONDS)`：尝试在 2 秒内获取锁。
 - 如果在指定时间内成功获取锁，在 `try` 块中执行受保护的操作，并在 `finally` 块中释放锁；如果超时未获取到锁，执行相应的超时处理逻辑。
 
-```
+```java
  // isLocked() 方法：检查锁是否被锁定
     public void useIsLockedMethod() {
         boolean isLocked = lock.isLocked();
@@ -332,7 +337,7 @@ private void doSignal(Node first) {
 
 - `lock.isLocked()`：检查锁是否被锁定，返回 `true` 或 `false`。
 
-```
+```java
 // isHeldByCurrentThread() 方法：检查锁是否被当前线程持有
 public void useIsHeldByCurrentThreadMethod() {
     lock.lock();
@@ -349,7 +354,7 @@ public void useIsHeldByCurrentThreadMethod() {
 
 - `lock.isHeldByCurrentThread()`：检查当前线程是否持有锁，在 `try` 块中获取锁，检查并打印结果，在 `finally` 块中释放锁。
 
-```
+```java
 // getHoldCount() 方法：返回当前线程持有锁的次数
 public void useGetHoldCountMethod() {
     lock.lock();
@@ -369,7 +374,7 @@ public void useGetHoldCountMethod() {
 - `lock.lock()`：多次获取锁，`lock.getHoldCount()` 可获取当前线程持有锁的次数。
 - 注意在 `finally` 块中要调用相同次数的 `lock.unlock()` 来释放锁，以确保锁被完全释放。
 
-```
+```java
     public void performTask() {
         Thread thread1 = new Thread(() -> {
             try {
@@ -429,7 +434,7 @@ public void useGetHoldCountMethod() {
 
 **测试方法**
 
-```
+```java
  public static void main(String[] args) throws InterruptedException {
         ReentrantLockMethodsExample example = new ReentrantLockMethodsExample();
         example.useLockMethod();
@@ -445,14 +450,15 @@ public void useGetHoldCountMethod() {
 
 **测试结果**
 
-![](https://cdn.nlark.com/yuque/0/2025/png/26566882/1737554558923-99d82997-9c4a-422c-b4bd-b2eeec7226fa.png)
+![image.png](https://cdn.easymuzi.cn/img/20250125004049516.png)
+
 
 ### ReentranLock是如何实现可重入的？
 
 可重入锁指的是同一个线程中可以多次获取同一把锁。比如在JAVA中，当一个线程调用一个对象的加锁的方法后,还可以调用其他加同一把锁的方法，这就是可重入锁。  
 ReentrantLock 加锁的时候，看下当前持有锁的线程和当前请求的线程是否是同一个，一样就可重入了。 只需要简单得将state值加1，记录当前线程的重入次数即可。
 
-```
+```java
 if (current == getExclusiveOwnerThread()) {
      int nextc = c + acquires;
      if (nextc < 0)
@@ -464,7 +470,7 @@ if (current == getExclusiveOwnerThread()) {
 
 同时在锁进行释放的时候，需要确保状态State=0的时候才可执行释放资源的操作，所以一个可重入锁加锁多少次，同时需要解锁多少次。
 
-```
+```java
 
 protected final boolean tryRelease(int releases) {
     int c = getState() - releases;
