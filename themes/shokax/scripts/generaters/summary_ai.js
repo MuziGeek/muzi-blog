@@ -22,13 +22,12 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 var import_node_crypto = require("node:crypto");
 var import_promises = __toESM(require("node:fs/promises"));
-const config = hexo.theme.config.summary;
 async function getSummaryByAPI(content) {
-  const apiKey = config.apiKey;
-  const apiUrl = config.apiUrl;
-  const model = config.model;
-  const temperature = config.temperature ?? 1.3;
-  const initalPrompt = config.initalPrompt;
+  const apiKey = hexo.theme.config.summary.apiKey;
+  const apiUrl = hexo.theme.config.summary.apiUrl;
+  const model = hexo.theme.config.summary.model;
+  const temperature = hexo.theme.config.summary.temperature ?? 1.3;
+  const initalPrompt = hexo.theme.config.summary.initalPrompt;
   const res = await fetch(apiUrl, {
     method: "POST",
     headers: {
@@ -109,20 +108,16 @@ hexo.extend.generator.register("summary_ai", async function(locals) {
   const db = new SummaryDatabase();
   await db.readDB();
   const postArray = posts.toArray();
-   // 修改 p-limit 导入部分
-  const import_p_limit = await import('p-limit');
-  // 调整并发限制调用
-  const concurrencyLimit = import_p_limit.default(config.concurrency || 5);
+  const pLimit = require("@common.js/p-limit").default;
+  const concurrencyLimit = pLimit(hexo.theme.config.summary?.concurrency || 5);
   const processingPromises = postArray.map((post) => concurrencyLimit(async () => {
     const content = post.content;
     const path = post.path;
     const published = post.published;
-    hexo.log.info(`[ShokaX Summary AI] \u6587\u7AE0 ${path} \u7684\u6458\u8981\u5904\u7406\u5F00\u59CB`);
     if (content && path && published && content.length > 0) {
       try {
         const summary = await db.getPostSummary(path, content);
         post.summary = summary;
-        hexo.log.info(`[ShokaX Summary AI] \u6587\u7AE0 ${path} \u7684\u6458\u8981\u5904\u7406\u5B8C\u6210`);
       } catch (error) {
         hexo.log.error(`[ShokaX Summary AI] \u5904\u7406\u6587\u7AE0 ${path} \u65F6\u51FA\u9519:`, error.message);
         post.summary = `${error.message}`;
