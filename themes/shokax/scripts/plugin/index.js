@@ -20,56 +20,46 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var import_injects = __toESM(require("./lib/injects"));
 var import_package = require("../../package.json");
-var fs = __toESM(require("node:fs"));
-/*!
-  index.js in next-theme/hexo-theme-next by next-theme
-  under GNU AFFERO GENERAL PUBLIC LICENSE v3.0 OR LATER
-  https://github.com/next-theme/hexo-theme-next/blob/master/LICENSE.md
- */
-hexo.on("generateBefore", () => {
+var import_promises = require("node:fs/promises");
+var import_injects = __toESM(require("./lib/injects"));
+hexo.on("generateBefore", async () => {
   (0, import_injects.default)(hexo);
-  fs.rmSync("./shokaxTemp", { force: true, recursive: true });
-  if (fs.existsSync("cf-patch.js")) {
-    fs.unlinkSync("cf-patch.js");
-  }
-  if (fs.existsSync("request.lock")) {
-    fs.unlinkSync("request.lock");
-  }
-  if (fs.existsSync("requested.lock")) {
-    fs.unlinkSync("requested.lock");
+  try {
+    await (0, import_promises.unlink)("cf-patch.js");
+  } catch (e) {
   }
 });
-hexo.on("generateAfter", () => {
-  fetch("https://registry.npmmirror.com/hexo-theme-shokax/latest", { headers: {
-    "User-Agent": "ShokaX Client (hexo-theme-shokax)"
-  } }).then((res) => {
-    res.json().then((resp) => {
-      try {
-        const latest = resp["version"];
-        const current = import_package.version.split(".");
-        let isOutdated = false;
-        for (let i = 0; i < Math.max(latest.length, current.length); i++) {
-          if (!current[i] || latest[i] > current[i]) {
-            isOutdated = true;
-            break;
-          }
-          if (latest[i] < current[i]) {
-            break;
-          }
-        }
-        if (isOutdated) {
-          hexo.log.warn(`Your theme ShokaX is outdated. Current version: v${current.join(".")}, latest version: v${latest.join(".")}`);
-          hexo.log.warn("Visit https://github.com/theme-shoka-x/hexo-theme-shokaX/releases for more information.");
-        }
-      } catch (e) {
-        hexo.log.warn("Failed to detect version info. Error message:");
-        hexo.log.warn(e);
+hexo.on("generateAfter", async () => {
+  try {
+    const res = await fetch("https://registry.npmmirror.com/hexo-theme-shokax/latest", {
+      headers: {
+        "User-Agent": "ShokaX Client (hexo-theme-shokax)"
       }
-    }).catch((e) => {
-      hexo.log.warn("Failed to detect version info. Error message:");
-      hexo.log.warn(e);
     });
-  });
+    const resp = await res.json();
+    const latest = resp.version;
+    const current = import_package.version.split(".");
+    let isOutdated = false;
+    for (let i = 0; i < Math.max(latest.length, current.length); i++) {
+      if (!current[i] || latest[i] > current[i]) {
+        isOutdated = true;
+        break;
+      }
+      if (latest[i] < current[i]) {
+        break;
+      }
+    }
+    if (isOutdated) {
+      hexo.log.warn(`Your theme ShokaX is outdated. Current version: v${current.join(".")}, latest version: v${latest.join(".")}`);
+      hexo.log.warn("Visit https://github.com/theme-shoka-x/hexo-theme-shokaX/releases for more information.");
+    }
+  } catch (e) {
+    hexo.log.warn("Failed to detect version info. Error message:");
+    hexo.log.warn(e);
+  }
+  if ((/* @__PURE__ */ new Date()).getDate() === 5 && (/* @__PURE__ */ new Date()).getMonth() === 8) {
+    console.log("\u{1F389} ShokaX \u751F\u65E5\u5FEB\u4E50\uFF01\nHappy Birthday ShokaX!");
+    console.log("\u611F\u8C22\u4F60\u4EEC\u7684\u652F\u6301\u4E0E\u966A\u4F34\uFF01\nThanks for your support and company!");
+  }
 });

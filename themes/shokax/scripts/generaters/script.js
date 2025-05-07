@@ -21,10 +21,11 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_package = __toESM(require("../../package.json"));
-var import_node_fs = __toESM(require("node:fs"));
+var import_promises = __toESM(require("node:fs/promises"));
 var import_esbuild = require("esbuild");
 var import_utils = require("../utils");
-hexo.extend.generator.register("script", function(locals) {
+var import_hexo_util = require("hexo-util");
+hexo.extend.generator.register("script", async function(locals) {
   const config = hexo.config;
   const theme = hexo.theme.config;
   const siteConfig = {
@@ -45,19 +46,13 @@ hexo.extend.generator.register("script", function(locals) {
         url: theme.css + "/mermaid.css",
         local: true,
         sri: ""
-      },
-      fancybox: (0, import_utils.getVendorLink)(hexo, theme.vendors.css.fancybox),
-      justifiedGallery: (0, import_utils.getVendorLink)(hexo, theme.vendors.css.justifiedGallery)
+      }
     },
     loader: theme.loader,
     search: null,
     outime: {
       enable: theme.outime.enable,
       days: theme.outime.days
-    },
-    quicklink: {
-      timeout: theme.quicklink.timeout,
-      priority: theme.quicklink.priority
     },
     playerAPI: theme.playerAPI,
     experiments: {
@@ -93,14 +88,16 @@ hexo.extend.generator.register("script", function(locals) {
     siteConfig.audio = theme.audio;
   }
   let enterPoint, patchDir;
-  if (import_node_fs.default.existsSync("themes/shokaX/source/js/_app/pjax/siteInit.ts")) {
-    patchDir = "themes/shokaX/source/js/_app/components/cloudflare.ts";
+  try {
+    await import_promises.default.readFile("themes/shokaX/source/js/_app/pjax/siteInit.ts", "utf-8");
     enterPoint = "themes/shokaX/source/js/_app/pjax/siteInit.ts";
-  } else {
-    patchDir = "node_modules/hexo-theme-shokax/source/js/_app/components/cloudflare.ts";
+    patchDir = "themes/shokaX/source/js/_app/components/cloudflare.ts";
+  } catch (e) {
     enterPoint = "node_modules/hexo-theme-shokax/source/js/_app/pjax/siteInit.ts";
+    patchDir = "node_modules/hexo-theme-shokax/source/js/_app/components/cloudflare.ts";
   }
-  (0, import_esbuild.buildSync)({
+  const resultApp = await (0, import_esbuild.build)({
+    write: false,
     entryPoints: [enterPoint],
     bundle: true,
     outdir: "shokaxTemp",
@@ -116,13 +113,11 @@ hexo.extend.generator.register("script", function(locals) {
     platform: "browser",
     format: "esm",
     target: ["es2022"],
-    minify: true,
+    minify: !theme.modules.debug,
     legalComments: "linked",
     mainFields: ["module", "browser", "main"],
     splitting: true,
     define: {
-      __UNLAZY_LOGGING__: "false",
-      __UNLAZY_HASH_DECODING__: theme.modules.unlazyHash ? "true" : "false",
       __shokax_player__: theme.modules.player ? "true" : "false",
       __shokax_VL__: theme.modules.visibilityListener ? "true" : "false",
       __shokax_fireworks__: theme.fireworks && theme.fireworks.enable && theme.fireworks.options && theme.modules.fireworks ? "true" : "false",
@@ -130,7 +125,6 @@ hexo.extend.generator.register("script", function(locals) {
       __shokax_outime__: theme.outime.enable ? "true" : "false",
       __shokax_tabs__: theme.modules.tabs ? "true" : "false",
       __shokax_quiz__: theme.modules.quiz ? "true" : "false",
-      __shokax_fancybox__: theme.modules.fancybox ? "true" : "false",
       __shokax_waline__: theme.waline.enable ? "true" : "false",
       __shokax_twikoo__: theme.twikoo.enable ? "true" : "false",
       __shokax_antiFakeWebsite__: theme.experiments.antiFakeWebsite ? "true" : "false",
@@ -139,35 +133,51 @@ hexo.extend.generator.register("script", function(locals) {
     }
   });
   const res = [];
-  import_node_fs.default.readdirSync("./shokaxTemp").forEach((file) => {
-    const fileText = import_node_fs.default.readFileSync(`./shokaxTemp/${file}`, { encoding: "utf-8" });
-    if (file.endsWith("js")) {
-      const result = hexo.render.renderSync({ text: fileText, engine: "js" });
+  resultApp.outputFiles.forEach((file) => {
+    let fileName = "";
+    if (file.path.split("\\").length > 1) {
+      fileName = file.path.split("\\").pop();
+    } else {
+      fileName = file.path.split("/").pop();
+    }
+    if (file.path.endsWith(".js")) {
       res.push({
-        path: theme.js + "/" + file,
-        data: function() {
-          return result;
-        }
+        path: theme.js + "/" + fileName,
+        data: file.text
       });
-    } else if (file.endsWith("css")) {
-      const result = hexo.render.renderSync({ text: fileText, engine: "css" });
+    } else if (file.path.endsWith(".css")) {
       res.push({
-        path: theme.css + "/" + file,
-        data: function() {
-          return result;
-        }
+        path: theme.css + "/" + fileName,
+        data: file.text
       });
     } else {
       res.push({
-        path: theme.js + "/" + file,
-        data: function() {
-          return fileText;
-        }
+        path: theme.statics + "/" + fileName,
+        data: file.text
       });
     }
   });
-  if (theme.experiments.cloudflarePatch) {
-    const result = (0, import_esbuild.buildSync)({
+  hexo.extend.helper.register("preloadjs", function() {
+    let resultHtml = "";
+    res.forEach((file) => {
+      if (file.path.endsWith(".js")) {
+        resultHtml += (0, import_hexo_util.htmlTag)("link", { rel: "modulepreload", href: import_hexo_util.url_for.call(this, file.path) }, "");
+      }
+    });
+    return resultHtml;
+  });
+  hexo.extend.helper.register("load_async_css", function() {
+    let resultHtml = "";
+    res.forEach((file) => {
+      if (file.path.endsWith(".css")) {
+        resultHtml += (0, import_hexo_util.htmlTag)("link", { rel: "stylesheet", href: import_hexo_util.url_for.call(this, file.path), media: "none", onload: "this.media='all'" }, "");
+      }
+    });
+    return resultHtml;
+  });
+  if (theme.modules.cloudflarePatch) {
+    const resultCF = await (0, import_esbuild.build)({
+      write: false,
       entryPoints: [patchDir],
       bundle: true,
       platform: "browser",
@@ -182,14 +192,12 @@ hexo.extend.generator.register("script", function(locals) {
         }
       },
       target: ["es2022"],
-      minify: true,
+      minify: !theme.modules.debug,
       outfile: "cf-patch.js"
     });
     res.push({
       path: theme.js + "/cf-patch.js",
-      data: function() {
-        return import_node_fs.default.readFileSync("./cf-patch.js", { encoding: "utf-8" });
-      }
+      data: resultCF.outputFiles[0].text
     });
   }
   return res;

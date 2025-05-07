@@ -90,6 +90,7 @@ class SummaryDatabase {
     if (this.data.summaries[pathHash]?.sha256 === contentHash) {
       return this.data.summaries[pathHash].summary;
     } else {
+      hexo.log.info(`[ShokaX Summary AI] \u6B63\u5728\u5411 API \u8BF7\u6C42 ${path} \u7684\u6458\u8981`);
       const summaryContent = await getSummaryByAPI(content);
       this.data.summaries[pathHash] = {
         summary: summaryContent,

@@ -22,10 +22,10 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 var import_hexo_util = require("hexo-util");
-var import_node_fs = __toESM(require("node:fs"));
+var import_promises = __toESM(require("node:fs/promises"));
 var import_path = __toESM(require("path"));
 var import_js_yaml = __toESM(require("js-yaml"));
-hexo.extend.filter.register("before_generate", () => {
+hexo.extend.filter.register("before_generate", async () => {
   if (hexo.config.theme_config) {
     hexo.theme.config = (0, import_hexo_util.deepMerge)(hexo.theme.config, hexo.config.theme_config);
   }
@@ -44,20 +44,25 @@ hexo.extend.filter.register("before_generate", () => {
   hexo.theme.config.style = {};
   for (const style of ["iconfont", "colors", "custom"]) {
     const custom_file = "source/_data/" + style + ".styl";
-    if (import_node_fs.default.existsSync(custom_file)) {
+    try {
+      await import_promises.default.readFile(custom_file);
       hexo.theme.config.style[style] = import_path.default.resolve(hexo.base_dir, custom_file);
+    } catch {
     }
   }
   if (data.images && data.images.length > 0) {
     hexo.theme.config.image_list = data.images;
   } else {
-    hexo.theme.config.image_list = import_js_yaml.default.load(import_node_fs.default.readFileSync(import_path.default.join(__dirname, "../../_images.yml"), { encoding: "utf-8" }));
+    hexo.theme.config.image_list = import_js_yaml.default.load(await import_promises.default.readFile(import_path.default.join(__dirname, "../../_images.yml"), { encoding: "utf-8" }));
   }
   if (data.images_index && data.images_index.length > 0) {
     hexo.theme.config.index_images = data.images_index;
-  } else if (import_node_fs.default.existsSync(import_path.default.join(__dirname, "../../_images_index.yml"))) {
-    hexo.theme.config.index_images = import_js_yaml.default.load(import_node_fs.default.readFileSync(import_path.default.join(__dirname, "../../_images_index.yml"), { encoding: "utf-8" }));
   } else {
-    hexo.theme.config.index_images = data.index_images || [];
+    try {
+      const fileContent = await import_promises.default.readFile(import_path.default.join(__dirname, "../../_images_index.yml"), "utf-8");
+      hexo.theme.config.index_images = import_js_yaml.default.load(fileContent);
+    } catch (e) {
+      hexo.theme.config.index_images = data.index_images || [];
+    }
   }
 });

@@ -1,19 +1,20 @@
 "use strict";
-const fs = require("hexo-fs");
-hexo.extend.generator.register("images", function(locals) {
+var import_promises = require("node:fs/promises");
+hexo.extend.generator.register("images", async function(locals) {
   const theme = hexo.theme.config;
   const dir = "source/_data/" + theme.assets + "/";
-  if (!fs.existsSync(dir)) {
+  try {
+    await (0, import_promises.readdir)(dir);
+  } catch (e) {
     return;
   }
   const result = [];
-  const files = fs.listDirSync(dir);
-  files.forEach((file) => {
+  const files = await (0, import_promises.readdir)(dir);
+  files.forEach(async (file) => {
+    const fileContent = await (0, import_promises.readFile)(dir + file);
     result.push({
       path: theme.assets + "/" + file,
-      data: function() {
-        return fs.createReadStream(dir + file);
-      }
+      data: fileContent
     });
   });
   return result;

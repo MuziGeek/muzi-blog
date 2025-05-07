@@ -1,29 +1,4 @@
-"use strict";
-var __create = Object.create;
-var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 var import_hexo_util = require("hexo-util");
-var import_node_fs = __toESM(require("node:fs"));
-const randomServer = parseInt(String(Math.random() * 4), 10) + 1;
 const randomBG = function(count = 1, image_server = null, image_list = []) {
   let i;
   if (image_server) {
@@ -36,16 +11,6 @@ const randomBG = function(count = 1, image_server = null, image_list = []) {
     }
     return image_server + "?" + Math.floor(Math.random() * 999999);
   }
-  const parseImage = function(img, size) {
-    if (img.startsWith("//") || img.startsWith("http")) {
-      return img;
-    } else if (hexo.theme.config.experiments?.usingRelative) {
-      return img;
-    } else {
-      console.warn("sinaimg blocked all request from outside website,so don't use this format");
-      return `https://tva${randomServer}.sinaimg.cn/` + size + "/" + img;
-    }
-  };
   if (count && count > 1) {
     let shuffled = image_list.slice(0);
     while (shuffled.length <= 6) {
@@ -61,31 +26,12 @@ const randomBG = function(count = 1, image_server = null, image_list = []) {
       shuffled[index] = shuffled[i];
       shuffled[i] = temp;
     }
-    return shuffled.slice(min).map(function(img) {
-      return parseImage(img, "large");
-    });
+    return shuffled.slice(min);
   }
-  return parseImage(image_list[Math.floor(Math.random() * image_list.length)], "mw690");
+  return image_list[Math.floor(Math.random() * image_list.length)];
 };
-hexo.extend.helper.register("preloadjs", function() {
-  const { statics, js } = hexo.theme.config;
-  let res = "";
-  import_node_fs.default.readdirSync("./shokaxTemp").forEach((file) => {
-    if (file.endsWith(".js")) {
-      res += (0, import_hexo_util.htmlTag)("link", { rel: "modulepreload", href: import_hexo_util.url_for.call(this, `${statics}${js}/${file}`) }, "");
-    }
-  });
-  return res;
-});
-hexo.extend.helper.register("load_async_css", function() {
-  const { statics, css } = hexo.theme.config;
-  let res = "";
-  import_node_fs.default.readdirSync("./shokaxTemp").forEach((file) => {
-    if (file.endsWith(".css")) {
-      res += (0, import_hexo_util.htmlTag)("link", { rel: "stylesheet", href: import_hexo_util.url_for.call(this, `${statics}${css}/${file}`), media: "none", onload: "this.media='all'" }, "");
-    }
-  });
-  return res;
+hexo.extend.helper.register("shokax_inject", function(point) {
+  return hexo.theme.config.injects[point].map((item) => this.partial(item.layout, item.locals, item.options)).join("");
 });
 hexo.extend.helper.register("_url", function(path, text, options = {}) {
   if (!path) {
@@ -157,7 +103,4 @@ hexo.extend.helper.register("random_color", function() {
   }
   const [r, g, b] = arr;
   return `#${r.toString(16).length > 1 ? r.toString(16) : "0" + r.toString(16)}${g.toString(16).length > 1 ? g.toString(16) : "0" + g.toString(16)}${b.toString(16).length > 1 ? b.toString(16) : "0" + b.toString(16)}`;
-});
-hexo.extend.helper.register("shokax_inject", function(point) {
-  return hexo.theme.config.injects[point].map((item) => this.partial(item.layout, item.locals, item.options)).join("");
 });
