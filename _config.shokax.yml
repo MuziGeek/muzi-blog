@@ -57,6 +57,7 @@ footer:
   # Specify the date when the site was setup. If not defined, current year will be used.
   since: 2024
   count: true
+  powered: false
    # Beian ICP and gongan information for Chinese users. See: https://beian.miit.gov.cn, https://beian.mps.gov.cn
   icp: # ICP备案
     enable: true
@@ -125,3 +126,14 @@ disable_baidu_transformation: true
 # Automatically add external URL with Base64 encrypt & decrypt.
 exturl: true
 
+homeConfig:
+  gradient: false # 使用CSS渐变作为文章封面
+  # fixedCover 性能比默认的更好，且开启时将启用LCP优化和预加载
+  fixedCover: "" # 主页面cover(为空则使用bing随机图片)
+  coverConfig:
+    enableCover: true # 是否开启头图
+    enablePreload: true #是否开启预加载头图
+    enableNextGradientCover: false # 使用CSS渐变作为上/下一页封面
+  cateCards:
+    - slug: note/code/interview # 分类 slug
+      cover: note/code/interview/cover.jpg # 分类封面
