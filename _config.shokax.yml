@@ -137,3 +137,5 @@ homeConfig:
   cateCards:
     - slug: note/code/interview # 分类 slug
       cover: note/code/interview/cover.jpg # 分类封面
+    - slug: note/code/100test # 分类 slug
+      cover: note/code/100test/cover.jpg # 分类封面
