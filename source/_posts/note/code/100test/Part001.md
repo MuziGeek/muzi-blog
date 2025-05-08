@@ -1,8 +1,10 @@
 ---
-title: 分片上传
+title: Part001 分片上传
 date: 2025-05-07 23:53:26
 categories:
- - [笔记, 编程, 100test]
+  - - 笔记
+    - 编程
+    - 100test
 tags:
   - Java
 ---
@@ -19,7 +21,8 @@ tags:
 
 设置分片大小、文件路径，根据文件大小/分片大小获得分片数量，初始化文件信息（文件路径，文件md5值，分片数量），把文件信息进行持久化，接下来进行分片上传，通过分片序号（根据分片数量从0开始），从分片大小×分片序号的字节位置开始读取分片大小的字节数进行上传，并将分片信息进行持久化，最后分片上传完毕后，进行分片数量和分片序号进行比对，判断是否全部分片上传完成，如果相等，则最后进行分片文件合并并移除分片文件，合并完成后将最终文件信息进行持久化，同时判断最终文件md5值与原始文件md5值是否一致，一致则上传任务完成。
 
-![](https://xqqmo2q8lg.feishu.cn/space/api/box/stream/download/asynccode/?code=YjFmOTc1ZjY0YjIwYTA3YjRlNzM1MGE3OWYxNjc4ZDhfYzQzdTdlejIwN2I0ZEFCSm1RdlpBQzdNWEliVlZzQllfVG9rZW46SlZDb2IzYVRkbzR5dUF4VnhPdGNYUkhKbmpnXzE3NDY2MzMyNTk6MTc0NjYzNjg1OV9WNA)
+![1280X1280.PNG](https://cdn.easymuzi.cn/img/20250508132902193.PNG)
+
 
 ## 代码实例
 
@@ -30,7 +33,7 @@ tags:
 
 每个分片任务会在此表创建一条记录
 
-```SQL
+```sql
 create table if not exists t_shard_upload(
     id varchar(32) primary key,
     file_name varchar(256) not null comment '文件名称',
@@ -45,7 +48,7 @@ create table if not exists t_shard_upload(
 
 这个表和上面的表是1对多的关系，用与记录每个分片的信息，比如一个文件被切分成10个分片，那么此表会产生10条记录
 
-```SQL
+```sql
 create table if not exists  t_shard_upload_part(
     id varchar(32) primary key,
     shard_upload_id varchar(32) not null comment '分片任务id（t_shard_upload.id）',
