@@ -42,5 +42,10 @@
     "theme-shokax-pjax": "0.0.3",
     "twikoo": "1.6.39",
     "unlazy": "0.12.1"
+  },
+  "pnpm": {
+  "overrides": {
+    "stylus": "git+https://github.com/stylus/stylus.git"
   }
+}
 }
