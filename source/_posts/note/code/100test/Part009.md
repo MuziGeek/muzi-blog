@@ -37,7 +37,7 @@ tags:
 
 `part009`模块的项目结构如下：
 
-```Plain
+```plain
 part009/
 ├── src/
 │   ├── main/

@@ -83,7 +83,7 @@ part004/
 1. **方案一：SQL条件判断**
     
 
-```Java
+```java
 // 使用SQL中的条件判断确保库存足够才能扣减
 int placeOrder1(@Param("goodsId") String goodsId, @Param("num") int num);
 
@@ -94,7 +94,7 @@ update t_goods set num = num - ${num} where goods_id = #{goodsId} and num - #{nu
 2. **方案二：乐观锁**
     
 
-```Java
+```java
 // 使用版本号实现乐观锁机制
 int placeOrder2(@Param("goodsId") String goodsId, @Param("num") int num, @Param("expectVersion") long expectVersion);
 
@@ -105,7 +105,7 @@ update t_goods set num = num - ${num}, version = version + 1 where goods_id = #{
 3. **方案三：事务内比对**
     
 
-```Java
+```java
 // 在事务中对比修改前后的数据，确保一致性
 int reduceStockResult = this.transactionTemplate.execute(action -> {
     // 执行更新扣减库存
@@ -129,7 +129,7 @@ int reduceStockResult = this.transactionTemplate.execute(action -> {
 4. **方案四：通用并发安全框架**
     
 
-```Java
+```java
 // 使用通用并发安全框架解决超卖问题
 return this.dbConcurrencySafe.exec(GoodsPO.class, goodsId, () -> {
     // 1、根据商品id获商品
@@ -184,7 +184,7 @@ return this.dbConcurrencySafe.exec(GoodsPO.class, goodsId, () -> {
 
 **技术实现**： `DbConcurrencySafe`接口定义了通用的并发安全操作框架：
 
-```Java
+```java
 public interface DbConcurrencySafe {
     /**
      * 对同一个key，此方法可以确保 callback 中修改db数据的安全性
@@ -202,7 +202,7 @@ public interface DbConcurrencySafe {
 
 `CasDbConcurrencySafe`类实现了这个接口，通过乐观锁机制确保数据修改的安全性：
 
-```Java
+```java
 @Component
 public class CasDbConcurrencySafe implements DbConcurrencySafe {
     @Override
@@ -268,7 +268,7 @@ public class CasDbConcurrencySafe implements DbConcurrencySafe {
 
 **技术实现**： `GoodsServiceImpl`类中实现了并发抢购的测试方法：
 
-```Java
+```java
 private void concurrentPlaceOrderMock(String method, Function<String, Integer> fun) throws InterruptedException {
     // 1、初始化商品数据：10个库存
     String goodsId = "1", goodsName = "iphone";
@@ -343,7 +343,7 @@ private void concurrentPlaceOrderMock(String method, Function<String, Integer> f
 1. **商品表 (t_goods)**
     
 
-```SQL
+```sql
 create table if not exists t_goods (
     goods_id   varchar(32) primary key comment '商品id',
     goods_name varchar(256) not null comment '商品名称',
@@ -355,7 +355,7 @@ create table if not exists t_goods (
 2. **并发安全辅助表 (t_concurrency_safe)**
     
 
-```SQL
+```sql
 create table if not exists t_concurrency_safe (
     id       varchar(32) primary key comment 'id',
     safe_key varchar(256) not null comment '需要保护的数据的唯一的key',
@@ -446,7 +446,7 @@ create table if not exists t_concurrency_safe (
 1. **读-改-写问题**
     
 
-```Plain
+```plain
 线程A读取库存为10
 线程B读取库存为10
 线程A计算新库存为9，并写入
@@ -476,7 +476,7 @@ create table if not exists t_concurrency_safe (
 
 ### **4.1 方案一：SQL条件判断**
 
-```Java
+```java
 // 控制器调用
 @GetMapping("/test1")
 public String test1() throws InterruptedException {
@@ -500,7 +500,7 @@ update t_goods set num = num - ${num} where goods_id = #{goodsId} and num - #{nu
 
 ### **4.2 方案二：乐观锁**
 
-```Java
+```java
 // 控制器调用
 @GetMapping("/test2")
 public String test2() throws InterruptedException {
@@ -534,7 +534,7 @@ where goods_id = #{goodsId} and version = #{expectVersion}
 
 ### **4.3 方案三：事务内比对**
 
-```Java
+```java
 // 控制器调用
 @GetMapping("/test3")
 public String test3() throws InterruptedException {
@@ -578,7 +578,7 @@ public void placeOrder3() throws InterruptedException {
 
 ### **4.4 方案四：通用并发安全框架**
 
-```Java
+```java
 // 控制器调用
 @GetMapping("/test4")
 public String test4() throws InterruptedException {

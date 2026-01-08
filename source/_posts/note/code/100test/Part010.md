@@ -497,7 +497,7 @@ client.send(broadcast.toString());
 
 ### **4.2 前端集成示例**
 
-```HTML
+```html
 <!DOCTYPE html>
 <html>
 <head>

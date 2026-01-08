@@ -77,7 +77,7 @@ part008/
 **技术实现**： 本模块设计了一套完整的Excel导出领域模型，通过面向对象的设计实现灵活的导出功能：
 
 1. **核心领域模型**
-```Java
+```java
 // Excel导出请求基类
 public class ExcelExportRequest {
     private String excelName;     // Excel文件名
@@ -112,7 +112,7 @@ public class ExcelSheet {
 2. **业务导出请求实现**
     
 
-```Java
+```java
 // 用户导出请求(继承通用导出请求)
 public class UserExportRequest extends ExcelExportRequest {
     private List<Integer> userIdList; // 要导出的用户ID列表
@@ -151,7 +151,7 @@ public class UserExportRequest extends ExcelExportRequest {
 
 **技术实现**： 本模块通过ExcelExportUtils工具类实现Excel导出的核心逻辑：
 
-```Java
+```java
 public class ExcelExportUtils {
     // 构建Excel导出响应对象
     public static ExcelExportResponse build(List<?> dataList, ExcelExportRequest request) {
@@ -283,7 +283,7 @@ public class ExcelExportUtils {
 
 **技术实现**： 本模块使用Spring AOP实现了自动Excel导出功能：
 
-```Java
+```java
 @Component
 @Aspect
 public class ExcelExportAspect {
@@ -336,7 +336,7 @@ public class ExcelExportAspect {
 
 **技术实现**： 本模块实现了一个用户列表导出的示例：
 
-```Java
+```java
 // 控制器方法
 @PostMapping("/userExport")
 @ResponseBody
@@ -511,7 +511,7 @@ public ExcelExportResponse userExport(UserExportRequest request) {
 
 ### **4.1 基本使用**
 
-```Java
+```java
 // 控制器方法
 @PostMapping("/userExport")
 @ResponseBody
@@ -536,7 +536,7 @@ public ExcelExportResponse userExport(@RequestBody UserExportRequest request) {
 
 ### **4.2 客户端调用示例**
 
-```JavaScript
+```javascript
 // 前端发起导出请求
 async function exportUsers() {
   const response = await fetch('/userExport', {
@@ -571,7 +571,7 @@ async function exportUsers() {
 
 ### **4.3 多Sheet导出示例**
 
-```Java
+```java
 public ExcelExportResponse exportMultiSheet(MultiSheetRequest request) {
     // 创建响应对象
     ExcelExportResponse response = new ExcelExportResponse();
@@ -601,7 +601,7 @@ public ExcelExportResponse exportMultiSheet(MultiSheetRequest request) {
 
 ### **4.4 自定义样式示例**
 
-```Java
+```java
 // 扩展ExcelExportUtils，添加样式支持
 public static void writeWithStyle(ExcelExportResponse result, OutputStream outputStream) {
     List<ExcelSheet> sheetList = result.getSheetList();

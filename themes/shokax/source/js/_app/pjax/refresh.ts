@@ -21,8 +21,6 @@ export const siteRefresh = async (reload) => {
   setLocalHash(0)
   setLocalUrl(window.location.href)
 
-  // @ts-ignore
-  // await import('katex/dist/katex.min.css')
   await import('katex/dist/contrib/copy-tex.mjs')
 
   // 懒加载背景图
@@ -53,7 +51,7 @@ export const siteRefresh = async (reload) => {
   sidebarTOC()
 
   const pagePost = await import('../page/post')
-  pagePost.postBeauty()
+  await pagePost.postBeauty()
 
   const cpel = document.getElementById('copyright')
   if (cpel) {

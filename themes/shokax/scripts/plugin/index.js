@@ -59,7 +59,7 @@ hexo.on("generateAfter", async () => {
     hexo.log.warn(e);
   }
   if ((/* @__PURE__ */ new Date()).getDate() === 5 && (/* @__PURE__ */ new Date()).getMonth() === 8) {
-    console.log("\u{1F389} ShokaX \u751F\u65E5\u5FEB\u4E50\uFF01\nHappy Birthday ShokaX!");
-    console.log("\u611F\u8C22\u4F60\u4EEC\u7684\u652F\u6301\u4E0E\u966A\u4F34\uFF01\nThanks for your support and company!");
+    hexo.log.info("\u{1F389} ShokaX \u751F\u65E5\u5FEB\u4E50\uFF01\nHappy Birthday ShokaX!");
+    hexo.log.info("\u611F\u8C22\u4F60\u4EEC\u7684\u652F\u6301\u4E0E\u966A\u4F34\uFF01\nThanks for your support and company!");
   }
 });

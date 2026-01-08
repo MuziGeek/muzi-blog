@@ -60,7 +60,7 @@ part006/
 1. **串行调用版本**
     
 
-```Java
+```java
 @GetMapping("/getGoodsDetail")
 public GoodsDetailResponse getGoodsDetail(@RequestParam("goodsId") String goodsId) {
     long st = System.currentTimeMillis();
@@ -86,7 +86,7 @@ public GoodsDetailResponse getGoodsDetail(@RequestParam("goodsId") String goodsI
 2. **并行调用优化版本**
     
 
-```Java
+```java
 @GetMapping("/getGoodsDetailNew")
 public GoodsDetailResponse getGoodsDetailNew(@RequestParam("goodsId") String goodsId) {
     long st = System.currentTimeMillis();
@@ -157,7 +157,7 @@ public GoodsDetailResponse getGoodsDetailNew(@RequestParam("goodsId") String goo
 
 **技术实现**： CompletableFuture是Java 8引入的增强型Future，实现了CompletionStage接口，提供了强大的异步编程能力：
 
-```Java
+```java
 // 创建异步任务
 CompletableFuture<Void> goodsInfoCf = CompletableFuture.runAsync(
     () -> goodsDetailResponse.setGoodsInfo(this.getGoodsInfo(goodsId)), 
@@ -201,7 +201,7 @@ CompletableFuture.allOf(
 
 **技术实现**： 本模块使用Spring的ThreadPoolTaskExecutor配置了专用的商品服务线程池：
 
-```Java
+```java
 @Configuration
 public class ThreadPoolConfig {
     @Bean
@@ -428,7 +428,7 @@ Spring的ThreadPoolTaskExecutor是对Java标准线程池的封装，提供了更
 
 获取商品详情基本示例：
 
-```Java
+```java
 @GetMapping("/getGoodsDetailNew")
 public GoodsDetailResponse getGoodsDetailNew(@RequestParam("goodsId") String goodsId) {
     GoodsDetailResponse response = new GoodsDetailResponse();
@@ -451,7 +451,7 @@ public GoodsDetailResponse getGoodsDetailNew(@RequestParam("goodsId") String goo
 
 ### **4.2 带返回值的异步调用**
 
-```Java
+```java
 // 创建带返回值的异步任务
 CompletableFuture<String> infoFuture = CompletableFuture.supplyAsync(
     () -> getGoodsInfo(goodsId), 
@@ -467,7 +467,7 @@ CompletableFuture<Integer> lengthFuture = infoFuture.thenApply(info -> info.leng
 
 ### **4.3 异常处理**
 
-```Java
+```java
 CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
     // 可能抛出异常的业务逻辑
     if (goodsId == null) {
@@ -483,7 +483,7 @@ CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
 
 ### **4.4 超时控制**
 
-```Java
+```java
 // Java 9及以上版本
 CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> getGoodsInfo(goodsId))
     .orTimeout(500, TimeUnit.MILLISECONDS)
@@ -505,7 +505,7 @@ try {
 
 ### **4.5 组合多个异步调用**
 
-```Java
+```java
 CompletableFuture<String> infoFuture = CompletableFuture.supplyAsync(() -> getGoodsInfo(goodsId));
 CompletableFuture<String> descFuture = CompletableFuture.supplyAsync(() -> getGoodsDescription(goodsId));
 

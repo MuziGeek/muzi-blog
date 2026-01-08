@@ -12,10 +12,13 @@
     "version": "7.3.0"
   },
   "dependencies": {
-    "@algolia/client-search": "^5.5.3",
-    "@waline/client": "^3.3.2",
-    "algoliasearch": "^5.18.0",
-    "esbuild": "^0.24.0",
+    "@algolia/client-search": "^5.34.1",
+    "@common.js/p-limit": "^6.1.0",
+    "@waline/client": "^3.6.0",
+    "algoliasearch": "^5.34.1",
+    "es-toolkit": "^1.39.8",
+    "esbuild": "^0.25.8",
+    "hana-img-viewer": "^1.2.3",
     "hexo": "^7.3.0",
     "hexo-algoliasearch": "^2.0.1",
     "hexo-cli": "^4.3.2",
@@ -26,26 +29,30 @@
     "hexo-generator-index": "^3.0.0",
     "hexo-generator-tag": "^2.0.0",
     "hexo-pagination": "^4.0.0",
+    "hexo-renderer-aether": "^0.0.6",
     "hexo-renderer-ejs": "^2.0.0",
     "hexo-renderer-multi-markdown-it-plus": "^0.1.0",
     "hexo-renderer-pug": "^3.0.0",
     "hexo-renderer-stylus": "^3.0.0",
     "hexo-server": "^3.0.0",
     "hexo-theme-shokax": "file:themes/shokax",
-    "hexo-util": "3.3.0",
-    "instantsearch.js": "4.74.1",
-    "js-yaml": "4.1.0",
-    "katex": "0.16.11",
-    "mouse-firework": "0.0.6",
+    "hexo-util": "^3.3.0",
+    "instantsearch.js": "^4.79.2",
+    "js-yaml": "^4.1.0",
+    "katex": "^0.16.22",
+    "mouse-firework": "^0.1.1",
+    "nyx-player": "^0.1.1",
     "quicklink": "2.3.0",
-    "theme-shokax-anime": "0.0.7",
+    "shokax-uikit": "^0.0.5",
+    "theme-shokax-anime": "^0.0.8",
     "theme-shokax-pjax": "0.0.3",
-    "twikoo": "1.6.39",
-    "unlazy": "0.12.1"
+    "twikoo": "^1.6.44",
+    "unlazy": "0.12.1",
+    "vue": "^3.5.18"
   },
   "pnpm": {
-  "overrides": {
-    "stylus": "git+https://github.com/stylus/stylus.git"
+    "overrides": {
+      "stylus": "git+https://github.com/stylus/stylus.git"
+    }
   }
-}
 }

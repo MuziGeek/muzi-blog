@@ -62,7 +62,7 @@ part007/
 
 **技术实现**： 声明式事务通过`@Transactional`注解实现，将整个方法纳入事务管理：
 
-```Java
+```java
 /**
  * 声明式事务，事务范围比较大
  */
@@ -116,7 +116,7 @@ public String getData() throws InterruptedException {
 
 **技术实现**： 编程式事务通过`TransactionTemplate`实现，可以精确控制事务边界：
 
-```Java
+```java
 /**
  * 使用 TransactionTemplate 编程式事务，可以灵活的控制事务的范围
  */
@@ -169,7 +169,7 @@ public void smallTransaction() throws InterruptedException {
 
 **技术实现**： 在`@Transactional`注解中可以指定传播行为：
 
-```Java
+```java
 @Transactional(propagation = Propagation.REQUIRED)
 public void methodA() {
     // 业务逻辑
@@ -305,7 +305,7 @@ Spring事务管理基于AOP（面向切面编程）实现：
 3. **Spring中的配置**
     
 
-```Java
+```java
 @Transactional(isolation = Isolation.READ_COMMITTED)
 public void myMethod() {
     // 业务逻辑
@@ -338,7 +338,7 @@ public void myMethod() {
 
 ### **4.1 声明式事务**
 
-```Java
+```java
 @Service
 public class UserService {
     @Autowired
@@ -358,7 +358,7 @@ public class UserService {
 
 ### **4.2 编程式事务**
 
-```Java
+```java
 @Service
 public class UserService {
     @Autowired
@@ -388,7 +388,7 @@ public class UserService {
 
 ### **4.3 事务传播行为示例**
 
-```Java
+```java
 @Service
 public class OrderService {
     @Autowired
@@ -421,7 +421,7 @@ public class PaymentService {
 
 ### **4.4 事务隔离级别示例**
 
-```Java
+```java
 @Transactional(isolation = Isolation.READ_COMMITTED)
 public void updateUserInfo(Long userId, String name) {
     User user = userMapper.selectById(userId);

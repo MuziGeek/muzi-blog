@@ -3,8 +3,9 @@ import { clipBoard, showtip } from '../globals/tools'
 import { CONFIG, BODY } from '../globals/globalVars'
 import { pageScroll, transition } from '../library/anime'
 import { getDisplay, setDisplay, wrapObject } from '../library/proto'
+import { initializeCodeBlock } from 'shokax-uikit/components/codeblock/init'
 
-export const postBeauty = () => {
+export const postBeauty = async () => {
   if (!document.querySelector('.md')) { return }
 
   postImageViewer('.post.block');
@@ -245,4 +246,6 @@ export const postBeauty = () => {
       io.observe(i)
     })
   }
+
+  initializeCodeBlock('.shiki')
 }

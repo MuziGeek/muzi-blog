@@ -69,7 +69,9 @@ hexo.extend.generator.register("script", async function(locals) {
       requiredMeta: theme.waline.requiredMeta,
       wordLimit: theme.waline.wordLimit,
       pageSize: theme.waline.pageSize,
-      pageview: theme.waline.pageview
+      pageview: theme.waline.pageview,
+      recaptchaV3Key: theme.waline.recaptchaV3Key,
+      turnstileKey: theme.waline.turnstileKey
     },
     twikoo: {
       envId: theme.twikoo.envId,
@@ -121,7 +123,8 @@ hexo.extend.generator.register("script", async function(locals) {
       __shokax_player__: theme.modules.player ? "true" : "false",
       __shokax_VL__: theme.modules.visibilityListener ? "true" : "false",
       __shokax_fireworks__: theme.fireworks && theme.fireworks.enable && theme.fireworks.options && theme.modules.fireworks ? "true" : "false",
-      __shokax_search__: config?.algolia ? "true" : "false",
+      __shokax_algolia_search__: config?.algolia ? "true" : "false",
+      __shokax_pagefind_search__: theme.pagefind?.enable ? "true" : "false",
       __shokax_outime__: theme.outime.enable ? "true" : "false",
       __shokax_tabs__: theme.modules.tabs ? "true" : "false",
       __shokax_quiz__: theme.modules.quiz ? "true" : "false",

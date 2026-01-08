@@ -23,7 +23,7 @@ pwa:
 experiments:
   mobileWidth: 820px # 移动版和桌面版导航栏最短切换长度
   copyrightLength: 50 # 自定义复制时显示copyright的长度
-  antiFakeWebsite: false  # 防止恶意网站伪装
+  antiFakeWebsite: true # 防止恶意网站伪装
 
 homeConfig:
   gradient: false # 使用CSS渐变作为文章封面
@@ -43,7 +43,7 @@ modules:
   debug: false # 启用调试模式
   player: true # 启用音乐播放器
   fireworks: true # 启用鼠标点击烟花特效
-  visibilityListener: true # 启用可见度监听器
+  visibilityListener: true # 启用可见度监听器，当你不需要页面标题随标签页切换而变化可关闭
   tabs: true # 启用选项卡扩展支持，如需开启 summary 功能请一并开启
   quiz: true # 启用文章内问题扩展支持
   # 使用 Cloudflare Rocket 或其他优化功能时需开启下列补丁，否则主题无法渲染
@@ -164,7 +164,7 @@ font:
 
 # //at.alicdn.com/t/c/font_4415496_59g1326wajd.css => 4415496_59g1326wajd
 # 自定义iconfont图标参见文档教程
-iconfont: "4815722_i2vgm0ucww"
+iconfont: "4415496_59g1326wajd"
 
 menu:
   home: / || home
@@ -209,6 +209,8 @@ waline:
   wordLimit: 0 # 字数限制,0为不限制
   pageSize: 10 # 每页评论条数
   pageview: false # 是否开启浏览量统计,可独立开启
+  recaptchaV3Key: # reCAPTCHA v3密钥
+  turnstileKey: # Turnstile密钥
 
 summary:
   enable: false
@@ -219,6 +221,13 @@ summary:
   temperature:
   initalPrompt:
   concurrency: 5
+
+# 由于 Hexo 的 ESM 模块支持存在严重缺陷，ShokaX 无法引入自动索引流程，Pagefind 构建需要通过 CLI 手动执行
+# 在每次 generate 完成后需要执行`pnpm dlx pagefind --site public`，再 deploy，否则 Pagefind 无法正常工作
+# 参见：https://docs.shokax.kaitaku.xyz/features/search/#pagefind-%E6%90%9C%E7%B4%A2
+pagefind: # pagefind 本地搜索 https://pagefind.app/
+  enable: false # 是否启用
+
 
 # Social Links
 # Usage: `Key: permalink || icon || color`
@@ -312,7 +321,6 @@ creative_commons:
   language: deed.zh
 
 # bgm
-# 不使用请打开noplayer功能
 audio:
 #  - title: 列表1
 #    list:
@@ -320,9 +328,6 @@ audio:
 #  - title: 列表2
 #    list:
 #      - https://music.163.com/#/playlist?id=2031842656
-
-# random image api
-image_server: # "https://acg.xydwz.cn/api/api.php"
 
 # Algolia Search
 # For more information: https://www.algolia.com
