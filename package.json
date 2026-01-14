@@ -48,7 +48,8 @@
     "theme-shokax-pjax": "0.0.3",
     "twikoo": "^1.6.44",
     "unlazy": "0.12.1",
-    "vue": "^3.5.18"
+    "vue": "^3.5.18",
+    "yocto-queue": "^1.2.2"
   },
   "pnpm": {
     "overrides": {

@@ -23,7 +23,7 @@ pwa:
 experiments:
   mobileWidth: 820px # 移动版和桌面版导航栏最短切换长度
   copyrightLength: 50 # 自定义复制时显示copyright的长度
-  antiFakeWebsite: true # 防止恶意网站伪装
+  antiFakeWebsite: false # 防止恶意网站伪装
 
 homeConfig:
   gradient: false # 使用CSS渐变作为文章封面
@@ -164,7 +164,7 @@ font:
 
 # //at.alicdn.com/t/c/font_4415496_59g1326wajd.css => 4415496_59g1326wajd
 # 自定义iconfont图标参见文档教程
-iconfont: "4415496_59g1326wajd"
+iconfont: "4815722_i2vgm0ucww"
 
 menu:
   home: / || home
@@ -213,14 +213,24 @@ waline:
   turnstileKey: # Turnstile密钥
 
 summary:
-  enable: false
-  introduce: "" # AI自我介绍
-  model:
-  apiKey:
-  apiUrl:
-  temperature:
-  initalPrompt:
-  concurrency: 5
+  enable: true
+  introduce: "✨ 我是 Muzi 的「文章捕手」，擅长在文字的星海中打捞精华。每当新的篇章诞生，我就会像整理贝壳一样，将思想的闪光点串成珍珠项链~"
+  model: gpt-4.1-mini
+  apiKey: sk-ectKy9XeaWRmKZcQkUsGUaCOg8dCL0hWo5bfMKCcfWNcU9zK   # 建议用环境变量，不要直接写在这里
+  apiUrl: https://api.aabao.top/v1/chat/completions
+  temperature: 0.3
+  initalPrompt: |
+    你是一个专业的文章摘要生成助手，任务是为用户博客文章生成简明扼要的摘要。
+    要求：
+    1. 准确反映文章核心内容
+    2. 语言简洁流畅，控制在150字以内
+    3. 使用书面化中文，避免口语化表达
+    4. 保持中立客观，不添加主观评价
+    5. 突出技术文章的创新点和实用价值
+
+    输出格式：直接输出纯文本摘要，不要添加任何标记
+  concurrency: 3
+
 
 # 由于 Hexo 的 ESM 模块支持存在严重缺陷，ShokaX 无法引入自动索引流程，Pagefind 构建需要通过 CLI 手动执行
 # 在每次 generate 完成后需要执行`pnpm dlx pagefind --site public`，再 deploy，否则 Pagefind 无法正常工作
