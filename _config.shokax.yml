@@ -139,3 +139,10 @@ homeConfig:
       cover: note/code/interview/cover.jpg # 分类封面
     - slug: note/code/100test # 分类 slug
       cover: note/code/100test/cover.jpg # 分类封面
+chat_assistant:
+  enable: true
+  endpoint: 'https://blog-assistant-worker.tfk8123.workers.dev/api/chat'
+  avatar: 'https://easymuzi.cn/images/avatar.jpg'
+  bg_color: '#ffffff'
+
+
