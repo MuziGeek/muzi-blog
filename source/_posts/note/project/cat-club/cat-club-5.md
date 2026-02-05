@@ -11,6 +11,8 @@ tags:
   - 云迁移
 ---
 
+# Cat-club-5
+
 ## 前言
 
 今天的主要工作是整理腾讯云 CloudBase 迁移文档。项目正在从 Firebase 迁移到腾讯云 CloudBase，为了方便后续开发时快速了解迁移状态和开发指南，我将所有相关信息整理到了 `CLAUDE.md` 中。
@@ -50,7 +52,7 @@ final response = await http.post(
 | 服务 | 文件 | 实现方式 |
 |------|------|----------|
 | 认证服务 | `cloudbase_auth_http_service.dart` | HTTP API |
-| 数据库服务 | `cloudbase_service.dart` | SDK（待优化） |
+| 数据库服务 | `cloudbase_service.dart` | SDK（待优化）|
 | 存储服务 | `storage_service.dart` | 腾讯云 COS |
 
 **认证服务**支持的登录方式非常完整：
@@ -116,7 +118,7 @@ apiBaseUrl: 'https://cat-hub-6gcp6yje9dd382c7.api.tcloudbasegateway.com'
 
 ### 文档新增内容
 
-```
+```java
 CLAUDE.md 新增章节：
 ├── 🔄 腾讯云 CloudBase 迁移计划
 │   ├── 迁移背景
@@ -198,7 +200,7 @@ final phone = '+8613800138000';    // 缺少空格
 | 存储服务 | 100% | 腾讯云 COS 已完成 |
 | 宠物交互 | 100% | 手势交互系统完成 |
 | 商店系统 | 100% | 道具购买完成 |
-| 签到系统 | 100% | 7天循环奖励完成 |
+| 签到系统 | 100% | 7 天循环奖励完成 |
 | 成就系统 | 100% | 成就触发和展示完成 |
 | 文档整理 | 100% | 迁移文档已完成 |
 
