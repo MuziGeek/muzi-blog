@@ -10,6 +10,8 @@ tags:
   - AI生成
 ---
 
+# Cat-club-3
+
 ## 前言
 
 今天是开发的第三天，完成了几个重要的功能模块：**每日签到系统**、**道具商店**、**照片上传服务**，以及**AI 卡通形象生成服务**的完善。这些功能让应用的养成体验更加完整。
@@ -91,12 +93,13 @@ class CheckInService {
 ```
 
 奖励规则：
+
 | 天数 | 金币 | 钻石 | 道具 |
 |------|------|------|------|
-| 1-2天 | 50-80 | - | - |
-| 3天 | 100 | - | 小鱼干 x2 |
-| 5天 | 150 | - | 美味肉条 x2 |
-| 7天 | 300 | 10 | 高级鱼罐头 + 美容刷 |
+| 1-2 天 | 50-80 | - | - |
+| 3 天 | 100 | - | 小鱼干 x2 |
+| 5 天 | 150 | - | 美味肉条 x2 |
+| 7 天 | 300 | 10 | 高级鱼罐头 + 美容刷 |
 
 ---
 
@@ -118,7 +121,7 @@ class CheckInDialog extends ConsumerStatefulWidget {
 交互流程：
 1. 进入主页时自动检测是否已签到
 2. 未签到则弹出签到对话框
-3. 点击"立即签到"执行签到
+3. 点击 " 立即签到 " 执行签到
 4. 显示奖励动画（金币飞入效果）
 5. 道具自动添加到背包
 
@@ -215,6 +218,7 @@ class AiGenerationService {
 ```
 
 支持的风格：
+
 | 风格 | 描述 | Prompt 关键词 |
 |------|------|---------------|
 | cute | 可爱风 | chibi, kawaii, big sparkly eyes |
@@ -229,7 +233,7 @@ class AiGenerationService {
 
 Firestore 返回的数据是 `dynamic`，多处报错：
 
-```
+```java
 error - The argument type 'dynamic' can't be assigned to the parameter type 'Map'
 error - The argument type 'dynamic' can't be assigned to the parameter type 'int'
 ```
@@ -244,7 +248,7 @@ final inventory = Map<String, int>.from(data['inventory'] ?? {});
 final inventory = Map<String, int>.from((data['inventory'] ?? {}) as Map);
 ```
 
-### 2. StreamProvider 没有 notifier
+### 2. StreamProvider 没有 Notifier
 
 商店购买功能调用 `userProvider.notifier` 报错，因为 `userProvider` 是 `StreamProvider`。
 
@@ -268,6 +272,7 @@ await ref.read(userNotifierProvider.notifier).purchaseItem(...);
 3. 发现模拟器进程未运行
 
 **解决方案**：
+
 ```bash
 # 重启 ADB 服务
 D:/Android/SDK/platform-tools/adb.exe kill-server
@@ -287,7 +292,7 @@ adb devices  # 显示 emulator-5554 device
 ### 功能完成
 
 - ✅ **StorageService** - 图片选择、裁剪、上传
-- ✅ **CheckInService** - 7天循环签到奖励
+- ✅ **CheckInService** - 7 天循环签到奖励
 - ✅ **CheckInDialog** - 签到弹窗 UI（动画效果）
 - ✅ **ShopPage** - 道具商店（分类/购买/详情）
 - ✅ **AiGenerationService** - Replicate API 集成
@@ -295,7 +300,7 @@ adb devices  # 显示 emulator-5554 device
 
 ### 新增文件
 
-```
+```java
 lib/
 ├── services/
 │   ├── storage_service.dart      # 图片上传服务
@@ -311,7 +316,7 @@ lib/
 
 ### 修改文件
 
-```
+```java
 lib/
 ├── services/
 │   ├── ai_generation_service.dart  # 完善 API 调用
@@ -337,11 +342,11 @@ lib/
 | 状态系统 | 100% | 五维属性 + 离线衰减 |
 | 多宠物管理 | 100% | PetSelector 切换 |
 | 背包系统 | 100% | Firestore 持久化 ✨ |
-| **签到系统** | **100%** | **7天循环奖励** ✨ |
+| **签到系统** | **100%** | **7 天循环奖励** ✨ |
 | **道具商店** | **100%** | **分类购买** ✨ |
 | 宠物创建 | 67% | 待：照片上传 |
 | 用户中心 | 60% | 待：资料编辑 |
-| **AI生成** | **80%** | **API已集成，待UI** ✨ |
+| **AI 生成** | **80%** | **API 已集成，待 UI** ✨ |
 | 社区功能 | 0% | 占位页面 |
 
 **整体完成度：约 80%**
@@ -365,7 +370,7 @@ lib/
 
 遇到的类型转换问题提醒我：Dart 的强类型特性虽然有时候麻烦，但确实能在编译期发现很多潜在 bug。以后要更注意 Firestore 数据的类型处理。
 
-下一步最期待的是 AI 生成功能的 UI 实现。技术层面已经准备好了（Replicate API + GPT-4 Vision），就差把流程串起来。想象一下用户上传一张真实猫咪照片，几秒后就能看到 4 张不同风格的卡通形象... 这才是这个 App 的核心卖点！
+下一步最期待的是 AI 生成功能的 UI 实现。技术层面已经准备好了（Replicate API + GPT-4 Vision），就差把流程串起来。想象一下用户上传一张真实猫咪照片，几秒后就能看到 4 张不同风格的卡通形象… 这才是这个 App 的核心卖点！
 
 ---
 
