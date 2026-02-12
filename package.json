@@ -54,6 +54,10 @@
   "pnpm": {
     "overrides": {
       "stylus": "git+https://github.com/stylus/stylus.git"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "hexo-util"
+    ]
   }
 }
