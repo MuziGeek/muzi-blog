@@ -142,7 +142,13 @@ homeConfig:
 chat_assistant:
   enable: true
   endpoint: 'https://blog-assistant-worker.tfk8123.workers.dev/api/chat'
-  avatar: 'https://easymuzi.cn/images/avatar.jpg'
+  avatar: 'https://cdn.easymuzi.cn/img/20250207113149959.apng'
   bg_color: '#ffffff'
+  live2d:
+    enable: true
+    # 黑猫模型（亮色主题 - 白底黑猫）
+    lightModel: 'https://unpkg.com/live2d-widget-model-hijiki/assets/hijiki.model.json'
+    # 白猫模型（暗色主题 - 黑底白猫）
+    darkModel: 'https://unpkg.com/live2d-widget-model-tororo/assets/tororo.model.json'
 
 
