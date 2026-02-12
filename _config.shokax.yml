@@ -126,6 +126,30 @@ disable_baidu_transformation: true
 # Automatically add external URL with Base64 encrypt & decrypt.
 exturl: true
 
+experiments:
+  antiFakeWebsite: false # 关闭防伪站校验，否则部署后页面 JS 初始化失败
+
+iconfont: "4815722_i2vgm0ucww"
+
+summary:
+  enable: true
+  introduce: "✨ 我是 Muzi 的「文章捕手」，擅长在文字的星海中打捞精华。每当新的篇章诞生，我就会像整理贝壳一样，将思想的闪光点串成珍珠项链~"
+  model: gpt-4.1-mini
+  apiKey: sk-ectKy9XeaWRmKZcQkUsGUaCOg8dCL0hWo5bfMKCcfWNcU9zK
+  apiUrl: https://api.aabao.top/v1/chat/completions
+  temperature: 0.3
+  initalPrompt: |
+    你是一个专业的文章摘要生成助手，任务是为用户博客文章生成简明扼要的摘要。
+    要求：
+    1. 准确反映文章核心内容
+    2. 语言简洁流畅，控制在150字以内
+    3. 使用书面化中文，避免口语化表达
+    4. 保持中立客观，不添加主观评价
+    5. 突出技术文章的创新点和实用价值
+
+    输出格式：直接输出纯文本摘要，不要添加任何标记
+  concurrency: 3
+
 homeConfig:
   gradient: false # 使用CSS渐变作为文章封面
   # fixedCover 性能比默认的更好，且开启时将启用LCP优化和预加载
