@@ -56,7 +56,7 @@ cos:
 ```
 
 **.env.example**
-```env
+```bash
 # COS 配置
 COS_REGION=ap-guangzhou
 COS_SECRET_ID=your_cos_secret_id
@@ -152,7 +152,7 @@ String filePath = fileStoragePort.uploadFile(
 
 移除 MinIO 服务，添加 COS 环境变量：
 ```yaml
-environment:
+```bashironment:
   - COS_REGION=${COS_REGION:-ap-guangzhou}
   - COS_SECRET_ID=${COS_SECRET_ID:-}
   - COS_SECRET_KEY=${COS_SECRET_KEY:-}
@@ -239,7 +239,7 @@ public String chat(IAiModelPort.InvokeRequest request) {
 ### 3.4 配置方式
 
 #### 方式一：官方 API
-```env
+```bash
 AI_PROVIDER=claude
 AI_API_KEY=sk-ant-xxx
 AI_MODEL=claude-sonnet-4-20250514
@@ -247,7 +247,7 @@ AI_MODEL=claude-sonnet-4-20250514
 ```
 
 #### 方式二：自定义中转站
-```env
+```bash
 AI_BASE_URL=https://your-proxy.com/v1
 AI_MODEL=gpt-4-turbo
 AI_API_KEY=sk-xxx
@@ -323,7 +323,7 @@ LlmGateway          ✅ (Claude/Qwen/中转站)
 
 ### .env.example AI 配置
 
-```env
+```bash
 # AI 配置
 # 方式一：官方 API（不配置 BASE_URL 时使用）
 AI_PROVIDER=openai  # openai / claude / qwen
