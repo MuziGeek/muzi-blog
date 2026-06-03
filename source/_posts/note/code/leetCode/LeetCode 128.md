@@ -1,5 +1,5 @@
 ---
-title: 热门算法100题
+title: LeetCode 128 最长连续序列
 date:
 categories:
   - - 笔记
@@ -33,9 +33,6 @@ tags:
 
 ## 三、Java 代码
 
-java
-
-运行
 
 ```java
 class Solution {

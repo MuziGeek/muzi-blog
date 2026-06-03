@@ -1,5 +1,5 @@
 ---
-title: 热门算法100题
+title: LeetCode 1 两数之和
 date:
 categories:
   - - 笔记
