@@ -1,8 +1,9 @@
 ---
-title: SpringAI智能体项目开发笔记
+title: 程序调用AI大模型
 date: 2026-06-05 17:18:27
 categories:
-  - [项目, mu-ai-agnet]
+  - - 项目
+    - mu-ai-agnet
 tags:
   - AI Agent
 ---
