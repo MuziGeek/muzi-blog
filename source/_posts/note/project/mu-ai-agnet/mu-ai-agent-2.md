@@ -10,9 +10,9 @@ tags:
   - Advisor
   - DFA算法
 ---
-**2026-06-07**🌱上海: ☀️  🌡️+79°F 🌬️N8mph
+**2026-06-07**🌱上海: ☀️ 🌡️+79°F 🌬️N8mph
 
-# mu-ai-agent-2
+# Mu-ai-agent-2
 
 ## 前言
 
@@ -24,9 +24,9 @@ tags:
 
 ## Advisor 是什么
 
-可以把 Advisor 想象成一条流水线上的"质检工位"：
+可以把 Advisor 想象成一条流水线上的 " 质检工位 "：
 
-```
+```java
 用户输入 → [Advisor1.before] → [Advisor2.before] → ... → AI 模型
 AI 响应 → [...after] → [Advisor2.after] → [Advisor1.after] → 返回用户
 ```
@@ -41,7 +41,7 @@ Spring AI 提供了三种粒度的 Advisor 接口：
 
 本次实现选用 `BaseAdvisor`，最简单也最常用。
 
-多个 Advisor 通过 `getOrder()` 决定执行顺序：值越小越先执行 `before()`，越后执行 `after()`。类比进办公楼 — 保安检查（order=0）→ 前台登记（order=1）→ 进会议室（AI 模型），出来时顺序反过来。
+多个 Advisor 通过 `getOrder()` 决定执行顺序：值越小越先执行 `before()`，越后执行 `after()`。类比进办公楼—保安检查（order=0）→ 前台登记（order=1）→ 进会议室（AI 模型），出来时顺序反过来。
 
 ---
 
@@ -51,12 +51,12 @@ Spring AI 提供了三种粒度的 Advisor 接口：
 
 敏感词匹配用 DFA（确定有限自动机 / Trie 前缀树）实现，核心思想是把所有敏感词构建成一棵前缀树：
 
-```
+```java
 root → [暴] → [力] → END
               [乱] → END
 ```
 
-"暴力"和"暴乱"共享了"暴"这个前缀节点，节省内存。匹配时采用**最长匹配**策略 — 词库有"中国"和"中国人"，输入"中国人"会匹配更长的"中国人"。
+" 暴力 " 和 " 暴乱 " 共享了 " 暴 " 这个前缀节点，节省内存。匹配时采用**最长匹配**策略—词库有 " 中国 " 和 " 中国人 "，输入 " 中国人 " 会匹配更长的 " 中国人 "。
 
 核心代码：
 
@@ -145,7 +145,7 @@ public class SensitiveWordAdvisor implements BaseAdvisor {
 }
 ```
 
-这里有两个关键 API — `mutate()` 和 `augmentUserMessage()`，下面详细分析它们的源码。
+这里有两个关键 API—`mutate()` 和 `augmentUserMessage()`，下面详细分析它们的源码。
 
 ### 3. 集成到 ChatClient
 
@@ -171,9 +171,9 @@ public InterViewApp(ChatModel dashscopeChatModel, SensitiveWordFilter sensitiveW
 
 ## 源码分析
 
-### mutate() — 不可变对象的"变异"
+### mutate()—不可变对象的 " 变异 "
 
-`ChatClientRequest` 是一个 Java `record`，天然不可变 — 所有字段都是 `final`，无法直接修改。要"修改"只能基于旧对象创建新的：
+`ChatClientRequest` 是一个 Java `record`，天然不可变—所有字段都是 `final`，无法直接修改。要 " 修改 " 只能基于旧对象创建新的：
 
 ```java
 // ChatClientRequest 源码
@@ -193,7 +193,7 @@ public record ChatClientRequest(Prompt prompt, Map<String, Object> context) {
 
 > 注意：record 保证的是**引用不可变**（不能把 `prompt` 字段指向另一个对象），不是深层不可变。所以 `mutate()` 里特意做了 `new HashMap<>(this.context)` 防止引用共享。
 
-### augmentUserMessage() — 替换用户消息
+### augmentUserMessage()—替换用户消息
 
 ```java
 // Prompt 源码
@@ -221,7 +221,7 @@ public Prompt augmentUserMessage(Function<UserMessage, UserMessage> augmenter) {
 ```
 
 关键点：
-- 从后往前找，因为"当前用户输入"是最后一条 UserMessage
+- 从后往前找，因为 " 当前用户输入 " 是最后一条 UserMessage
 - 用 `augmenter.apply()` 处理这条消息（Lambda 内部做了 `mutate().text(newText).build()`）
 - 其他消息（SystemMessage、历史 AssistantMessage 等）保持不变
 - 返回新的 Prompt 对象
@@ -274,11 +274,11 @@ default ChatClientResponse adviseCall(ChatClientRequest request, CallAdvisorChai
 }
 ```
 
-关键在 `chain.nextCall(processed)` — 把 `before()` 返回的新对象传回给链条，链条再 `pop()` 出下一个 Advisor。
+关键在 `chain.nextCall(processed)`—把 `before()` 返回的新对象传回给链条，链条再 `pop()` 出下一个 Advisor。
 
 ### 完整执行流程
 
-```
+```java
 Request_0: UserMessage = "关于暴力的问题"
     │
     ▼  SensitiveWordAdvisor.before()
@@ -295,7 +295,7 @@ Request_2:（不变，仅记录日志）
     ▼  沿 after() 反向回传 → 返回给用户
 ```
 
-**"每个 Advisor 都创建新对象，怎么统一？"** — 答案是：不需要统一。这是管道（Pipeline）不是并行，每个 Advisor 在上一个的结果上修改，最后到达 AI 模型的已经是包含所有修改的最终版本。就像接力赛的接力棒，每一棒传给下一个人，终点那根已经经历了所有加工。
+**" 每个 Advisor 都创建新对象，怎么统一？"**—答案是：不需要统一。这是管道（Pipeline）不是并行，每个 Advisor 在上一个的结果上修改，最后到达 AI 模型的已经是包含所有修改的最终版本。就像接力赛的接力棒，每一棒传给下一个人，终点那根已经经历了所有加工。
 
 ---
 
@@ -326,7 +326,7 @@ src/main/java/com/muzi/muaiagent/app/
 
 一开始不太理解 `mutate()` 的设计，以为可以直接 `request.setPrompt()`。实际上 `ChatClientRequest` 是 Java record，所有字段都是 `final`。
 
-**解决**：理解不可变对象模式 — 不能改旧的，只能基于旧的创建新的。`mutate()` → Builder → `.build()` 三步走。
+**解决**：理解不可变对象模式—不能改旧的，只能基于旧的创建新的。`mutate()` → Builder → `.build()` 三步走。
 
 ### 2. augmentUserMessage 是替换还是追加？
 
@@ -344,9 +344,9 @@ src/main/java/com/muzi/muaiagent/app/
 
 ## 心得体会
 
-这次实现最大的收获是把 Spring AI Advisor 链的底层机制彻底搞清楚了。之前只是知道"在 before 里改请求，在 after 里改响应"，但不理解新对象是怎么传递和统一的。
+这次实现最大的收获是把 Spring AI Advisor 链的底层机制彻底搞清楚了。之前只是知道 " 在 before 里改请求，在 after 里改响应 "，但不理解新对象是怎么传递和统一的。
 
-看了 `DefaultAroundAdvisorChain` 的源码后恍然大悟 — 它用 Deque + pop 实现了责任链，每个 Advisor 调用 `chain.nextCall(新对象)` 把修改后的请求传给下一个。根本不存在"统一"这个步骤，管道本身就是统一的。
+看了 `DefaultAroundAdvisorChain` 的源码后恍然大悟—它用 Deque + pop 实现了责任链，每个 Advisor 调用 `chain.nextCall(新对象)` 把修改后的请求传给下一个。根本不存在 " 统一 " 这个步骤，管道本身就是统一的。
 
 DFA 算法也很有意思，之前一直用暴力 `contains()` 做敏感词匹配，换成 Trie 之后性能差距巨大。10000 个词 + 200 字文本，暴力法最坏 200 万次比较，DFA 只要 2000 次操作。
 

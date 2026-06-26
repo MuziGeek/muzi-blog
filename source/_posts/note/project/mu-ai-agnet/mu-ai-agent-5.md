@@ -10,19 +10,19 @@ tags:
   - PromptTemplate
   - 模板引擎
 ---
-**2026-06-24**🌱上海: ☀️  🌡️+90°F 🌬️S8mph
+**2026-06-24**🌱上海: ☀️ 🌡️+90°F 🌬️S8mph
 
-# mu-ai-agent-5
+# Mu-ai-agent-5
 
 ## 前言
 
-在前面的几篇文章中，我们的 prompt 都是直接硬编码在 Java 代码里的 — 用字符串拼接构造用户消息，或者写一个 `static final String` 常量当系统提示词。这种做法在小规模项目里没什么问题，但随着 prompt 越来越多、越来越长，弊端就显现出来了：
+在前面的几篇文章中，我们的 prompt 都是直接硬编码在 Java 代码里的—用字符串拼接构造用户消息，或者写一个 `static final String` 常量当系统提示词。这种做法在小规模项目里没什么问题，但随着 prompt 越来越多、越来越长，弊端就显现出来了：
 
 - 想调一下措辞让模型回答更好？得改 Java 代码、重新编译、重新部署
 - 多个方法里都有大段的 prompt 字符串，代码可读性很差
 - 想统一修改 prompt 风格？得到处翻、到处改
 
-这个问题其实在 Web 开发中早有成熟的解决方案 — 把文本从代码中分离出来，放到独立的模板文件中。就像国际化（i18n）把文案放到 `.properties` 文件里一样，我们也可以把 prompt 放到资源文件中，运行时再加载和填充变量。
+这个问题其实在 Web 开发中早有成熟的解决方案—把文本从代码中分离出来，放到独立的模板文件中。就像国际化（i18n）把文案放到 `.properties` 文件里一样，我们也可以把 prompt 放到资源文件中，运行时再加载和填充变量。
 
 这次就来动手实现一套 Prompt 模板外部化方案，顺便把 Spring AI 内置的 `PromptTemplate` 类摸了一遍。
 
@@ -32,7 +32,7 @@ tags:
 
 用一个类比来理解：
 
-```
+```java
 国际化（i18n）:
   代码: getMessage("welcome", userName)
   文件: messages_zh.properties → welcome=你好，{0}
@@ -46,7 +46,7 @@ Prompt 模板:
 
 整个方案分三层：
 
-```
+```java
 resources/prompts/          ← 模板文件层（纯文本，运营可编辑）
     ├── single-question.txt
     ├── question-list.txt
@@ -99,9 +99,9 @@ String text = pt.render(Map.of("topic", "JVM"));
 Prompt prompt = pt.create(Map.of("topic", "JVM"));
 ```
 
-这个 `Resource` 构造器是关键 — 它让 `PromptTemplate` 可以直接从 classpath 资源文件加载模板，不需要我们自己写文件读取逻辑。
+这个 `Resource` 构造器是关键—它让 `PromptTemplate` 可以直接从 classpath 资源文件加载模板，不需要我们自己写文件读取逻辑。
 
-### render() vs create()
+### render() Vs create()
 
 `PromptTemplate` 有两个核心渲染方法，返回值类型不同：
 
@@ -166,7 +166,7 @@ public class PromptTemplateService {
 
 - **缓存的是 PromptTemplate 实例**，不是原始字符串。因为 `PromptTemplate` 内部持有模板文本，每次只需调 `render(variables)` 传入不同变量即可，不需要重新读文件
 - **`computeIfAbsent()` 是原子操作**，线程安全。Spring Bean 可能被多线程并发调用，用 `ConcurrentHashMap` 而不是普通 `HashMap`
-- **懒加载** — 模板首次使用时才从文件读取，未使用的模板不会被加载
+- **懒加载**—模板首次使用时才从文件读取，未使用的模板不会被加载
 
 使用时非常简洁：
 
@@ -239,7 +239,7 @@ public class PromptTemplateDirectApp {
 
 所有模板文件统一放在 `src/main/resources/prompts/` 下，使用 `.txt` 格式：
 
-```
+```java
 resources/prompts/
 ├── interview-system.txt       # 系统提示词（无变量）
 ├── single-question.txt        # 单道题 → 变量: {topic}
@@ -251,7 +251,7 @@ resources/prompts/
 
 以 `single-question.txt` 为例，内容就一行：
 
-```
+```java
 请围绕「{topic}」出一道 Java 后端面试题，包含参考答案、关键要点、难度等级和追问方向
 ```
 
@@ -283,7 +283,7 @@ chatClient = ChatClient.builder(model)
 
 看了 `PromptTemplate` 的源码，它的核心流程很清晰：
 
-```
+```java
 构造阶段:
   new PromptTemplate(Resource)
     → 读取 Resource 的 InputStream
@@ -302,13 +302,13 @@ create(Map variables)
     → 返回 Prompt 对象
 ```
 
-ST4 引擎的变量语法就是 `{variableName}`，和我们在模板文件里写的一致。它比简单的 `String.replace()` 更规范 — 比如变量未赋值时会有明确的报错，而不是静默保留占位符。
+ST4 引擎的变量语法就是 `{variableName}`，和我们在模板文件里写的一致。它比简单的 `String.replace()` 更规范—比如变量未赋值时会有明确的报错，而不是静默保留占位符。
 
 ---
 
 ## 新增/修改文件
 
-```
+```java
 src/main/java/com/muzi/muaiagent/
 ├── service/
 │   └── PromptTemplateService.java         # 模板加载服务（方案一）
@@ -334,7 +334,7 @@ src/main/resources/prompts/
 
 `question-manual.txt` 的模板中原本把 JSON 格式描述直接写在文件里：
 
-```
+```java
 请围绕「{topic}」出一道 Java 后端面试题。
 请严格按照以下 JSON 格式返回：
 {
@@ -343,7 +343,7 @@ src/main/resources/prompts/
 }
 ```
 
-结果运行时报错 — ST4 引擎把 JSON 的 `{` 和 `}` 当成了变量占位符来解析，试图找 `"question"` 这个变量名，当然找不到。
+结果运行时报错—ST4 引擎把 JSON 的 `{` 和 `}` 当成了变量占位符来解析，试图找 `"question"` 这个变量名，当然找不到。
 
 **解决**：把 JSON 格式描述从模板文件中拿出来，定义成 Java 常量，作为 `{formatInstruction}` 变量传入：
 
@@ -371,7 +371,7 @@ template.render(Map.of("topic", topic, "formatInstruction", JSON_FORMAT_INSTRUCT
 
 查文档时发现 `PromptTemplate` 的 API 在不同 Spring AI 版本中有变化。早期的 `render()` 返回 `Prompt`，后来的版本改成了返回 `String`，新增了 `create()` 返回 `Prompt`。
 
-**解决**：以项目中 `ReReadingAdvisor` 的实际用法为准 — `render()` 返回 `String`。同时查了 Spring AI 官方 Javadoc 确认当前版本的完整 API：
+**解决**：以项目中 `ReReadingAdvisor` 的实际用法为准—`render()` 返回 `String`。同时查了 Spring AI 官方 Javadoc 确认当前版本的完整 API：
 
 | 方法 | 返回类型 |
 |---|---|
@@ -379,7 +379,7 @@ template.render(Map.of("topic", topic, "formatInstruction", JSON_FORMAT_INSTRUCT
 | `render(Map)` | `String` |
 | `create()` | `Prompt` |
 | `create(Map)` | `Prompt` |
-| `getTemplate()` | `String`（返回模板原文） |
+| `getTemplate()` | `String`（返回模板原文）|
 
 **经验**：Spring AI 还在快速迭代中，遇到 API 对不上文档的情况，最靠谱的办法是直接在 IDE 里看 `PromptTemplate.class` 的方法列表，或者用 `mvn dependency:tree` 确认实际引入的版本。
 
@@ -387,13 +387,13 @@ template.render(Map.of("topic", topic, "formatInstruction", JSON_FORMAT_INSTRUCT
 
 ## 心得体会
 
-Prompt 外部化这件事，技术上其实很简单 — 无非就是把字符串从代码搬到文件里，运行时再读回来。但它的价值不在于代码量的减少，而在于**关注点分离**：调 prompt 的人不需要懂 Java，改代码的人不需要关心措辞。这在实际团队协作中非常重要，尤其是当产品经理或运营同学也想参与 prompt 调优的时候。
+Prompt 外部化这件事，技术上其实很简单—无非就是把字符串从代码搬到文件里，运行时再读回来。但它的价值不在于代码量的减少，而在于**关注点分离**：调 prompt 的人不需要懂 Java，改代码的人不需要关心措辞。这在实际团队协作中非常重要，尤其是当产品经理或运营同学也想参与 prompt 调优的时候。
 
 `PromptTemplate` 的 `Resource` 构造器是个很贴心的设计，一行代码就能从 classpath 加载模板文件，省去了自己写文件读取的样板代码。配合 `ConcurrentHashMap` 做个简单的缓存，就是一个够用的生产级方案了。
 
-JSON 大括号的坑挺有意思的。其实所有模板引擎都有类似的问题 — 模板语法和业务内容冲突。解决思路也都是一样的：把冲突的内容提取为变量。这个技巧在写 Thymeleaf、Freemarker 模板时也经常用到，不算什么新问题。
+JSON 大括号的坑挺有意思的。其实所有模板引擎都有类似的问题—模板语法和业务内容冲突。解决思路也都是一样的：把冲突的内容提取为变量。这个技巧在写 Thymeleaf、Freemarker 模板时也经常用到，不算什么新问题。
 
-和之前几篇文章串联起来看：第 2 篇讲了 Advisor 链（`ReReadingAdvisor` 里第一次用到了 `PromptTemplate`），第 3 篇讲了结构化输出（`entity()` 和手动解析），第 4 篇讲了记忆持久化。这篇算是把 prompt 管理这一块补全了。到目前为止，一个 AI Agent 应用的核心组件 — 模型调用、Advisor 链、结构化输出、记忆管理、Prompt 模板 — 基本都过了一遍。
+和之前几篇文章串联起来看：第 2 篇讲了 Advisor 链（`ReReadingAdvisor` 里第一次用到了 `PromptTemplate`），第 3 篇讲了结构化输出（`entity()` 和手动解析），第 4 篇讲了记忆持久化。这篇算是把 prompt 管理这一块补全了。到目前为止，一个 AI Agent 应用的核心组件—模型调用、Advisor 链、结构化输出、记忆管理、Prompt 模板—基本都过了一遍。
 
 下一步打算把这些组件整合成一个完整的面试助手 REST API，配合 Swagger 文档暴露出去，做一个真正可以交互的 demo。
 

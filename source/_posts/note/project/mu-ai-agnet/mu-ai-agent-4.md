@@ -11,13 +11,13 @@ tags:
   - Kryo
   - 多态序列化
 ---
-**2026-06-09**🌱上海: ☀️  🌡️+82°F 🌬️SE6mph
+**2026-06-09**🌱上海: ☀️ 🌡️+82°F 🌬️SE6mph
 
-# mu-ai-agent-4
+# Mu-ai-agent-4
 
 ## 前言
 
-在前面的文章中，我们用 `MessageChatMemoryAdvisor` 让 AI 助手具备了"记住上下文"的能力 — 它能记住你之前问了什么，对话不再"断片"。但当时用的是 `InMemoryChatMemoryRepository`，所有对话都存在内存里，应用一重启就全丢了。
+在前面的文章中，我们用 `MessageChatMemoryAdvisor` 让 AI 助手具备了 " 记住上下文 " 的能力—它能记住你之前问了什么，对话不再 " 断片 "。但当时用的是 `InMemoryChatMemoryRepository`，所有对话都存在内存里，应用一重启就全丢了。
 
 这对于一个真正要上线的应用来说显然不行。这篇文章就来深入聊聊 Spring AI 的聊天记忆持久化：它是怎么设计的、为什么序列化 Message 对象会比想象中复杂、以及怎么自己实现一个数据库持久化方案。
 
@@ -25,9 +25,9 @@ tags:
 
 ## Spring AI 聊天记忆的架构
 
-Spring AI 把"记忆"拆成了两层，职责很清晰：
+Spring AI 把 " 记忆 " 拆成了两层，职责很清晰：
 
-```
+```java
 ChatMemory（接口）        ← 上层：记忆管理策略（滑动窗口、Token 限制等）
   └── MessageWindowChatMemory  ← 唯一内置实现：滑动窗口
         └── ChatMemoryRepository（接口）  ← 下层：具体存储（内存/文件/数据库/Redis）
@@ -54,7 +54,7 @@ public interface ChatMemoryRepository {
 }
 ```
 
-注意到一个关键设计：`saveAll()` 是**全量替换**而非追加。这和 `MessageWindowChatMemory` 的滑动窗口策略有关 — 它每次保存的可能是截断后的结果，所以需要覆盖旧数据。
+注意到一个关键设计：`saveAll()` 是**全量替换**而非追加。这和 `MessageWindowChatMemory` 的滑动窗口策略有关—它每次保存的可能是截断后的结果，所以需要覆盖旧数据。
 
 ---
 
@@ -86,7 +86,7 @@ private List<Message> process(List<Message> memoryMessages, List<Message> newMes
 
 `maxMessages` 控制的是总消息数（不是 Token 数）。我们设了 `maxMessages=10`，表示一个会话最多保留 10 条消息。当第 11 条进来时，最早的非系统消息会被淘汰。
 
-`SystemMessage` 享有"免死金牌" — 无论窗口怎么滑动，系统提示词永远不会被淘汰。这很合理，因为系统提示词定义了 AI 的角色和行为规则，丢了它对话就会"失忆"。
+`SystemMessage` 享有 " 免死金牌 "—无论窗口怎么滑动，系统提示词永远不会被淘汰。这很合理，因为系统提示词定义了 AI 的角色和行为规则，丢了它对话就会 " 失忆 "。
 
 新消息进来时，如果包含一个之前没见过的 `SystemMessage`，旧的 `SystemMessage` 会被移除，确保只有一个生效。
 
@@ -98,7 +98,7 @@ private List<Message> process(List<Message> memoryMessages, List<Message> newMes
 
 Spring AI 的 `Message` 是一个接口，有 4 个具体实现类：
 
-```
+```java
 Message（接口）
   └── AbstractMessage（抽象基类，持有 messageType / textContent / metadata）
         ├── UserMessage        （用户消息，role=user，额外有 media 字段）
@@ -107,7 +107,7 @@ Message（接口）
         └── ToolResponseMessage（工具调用结果，role=tool）
 ```
 
-`ChatMemoryRepository` 存的是 `List<Message>`，一个会话里的消息肯定是混合类型 — 用户说一句（`UserMessage`），AI 回一句（`AssistantMessage`），可能还有系统提示词（`SystemMessage`）。
+`ChatMemoryRepository` 存的是 `List<Message>`，一个会话里的消息肯定是混合类型—用户说一句（`UserMessage`），AI 回一句（`AssistantMessage`），可能还有系统提示词（`SystemMessage`）。
 
 问题来了：把这堆不同类型的对象存下来、再取回来时，怎么保证每个对象还原成正确的子类？
 
@@ -176,7 +176,7 @@ Spring AI 官方提供了 `JdbcChatMemoryRepository`，我们也自己实现了�
 
 三种方案的对比：
 
-| 特性 | 内存（InMemory） | 文件（Kryo） | 数据库（JDBC） |
+| 特性 | 内存（InMemory）| 文件（Kryo）| 数据库（JDBC）|
 |------|-----------------|-------------|---------------|
 | 多态处理 | 不涉及 | Kryo 自动嵌入类信息 | 手动拆解 + switch 还原 |
 | 持久化 | ❌ 重启丢失 | ✅ 文件 | ✅ 数据库 |
@@ -187,26 +187,26 @@ Spring AI 官方提供了 `JdbcChatMemoryRepository`，我们也自己实现了�
 
 ---
 
-## Kryo vs JSON：多态序列化详解
+## Kryo Vs JSON：多态序列化详解
 
-### 为什么 Kryo "自动"就能处理？
+### 为什么 Kryo " 自动 " 就能处理？
 
 Kryo 序列化一个对象时，会在二进制流中**自动记录该对象的实际 Class 信息**。比如序列化一个 `UserMessage`，写入的数据大致是：
 
-```
+```java
 [类标识: UserMessage] [messageType: USER] [textContent: "你好"] [metadata: {...}] [media: []]
 ```
 
 反序列化时，Kryo 读取类标识，直接实例化对应的 `UserMessage`，不需要任何额外配置。
 
-两个关键配置让它能"自动"工作：
+两个关键配置让它能 " 自动 " 工作：
 
 ```java
 kryo.setRegistrationRequired(false);  // 不要求预注册类，允许序列化任意类
 kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());  // Objenesis 实例化策略
 ```
 
-`StdInstantiatorStrategy` 特别重要 — Spring AI 的 `AssistantMessage` 没有无参构造器（它的构造器至少需要 `String content`），普通反射会报 `NoSuchMethodException`，但 Objenesis 可以绕过构造器直接分配内存创建对象。
+`StdInstantiatorStrategy` 特别重要—Spring AI 的 `AssistantMessage` 没有无参构造器（它的构造器至少需要 `String content`），普通反射会报 `NoSuchMethodException`，但 Objenesis 可以绕过构造器直接分配内存创建对象。
 
 ### JSON（Jackson）为什么不行？
 
@@ -221,7 +221,7 @@ kryo.setInstantiatorStrategy(new StdInstantiatorStrategy());  // Objenesis 实�
 
 **反序列化时报错**：
 
-```
+```java
 Cannot construct instance of `Message`: abstract types either need to be mapped
 to concrete types, have custom deserializer, or contain additional type information
 ```
@@ -232,7 +232,7 @@ Jackson 看到声明类型是 `Message`（接口），不知道该实例化哪�
 
 **方案 B**：开启 Jackson 的 `DefaultTyping`，让每个对象都带上 `@class` 字段。能工作但 JSON 变得不干净，而且有安全风险（反序列化漏洞）。
 
-**方案 C**：手动按类型分发 — 这就是 Spring AI 官方 JDBC 实现的做法，下面重点分析。
+**方案 C**：手动按类型分发—这就是 Spring AI 官方 JDBC 实现的做法，下面重点分析。
 
 ---
 
@@ -368,7 +368,7 @@ public class DbChatMemoryRepository implements ChatMemoryRepository {
 }
 ```
 
-**查询 — switch 还原子类**（和官方 MessageRowMapper 同样的策略）：
+**查询—switch 还原子类**（和官方 MessageRowMapper 同样的策略）：
 
 ```java
 @Override
@@ -388,7 +388,7 @@ public List<Message> findByConversationId(String conversationId) {
 }
 ```
 
-**保存 — 先删后插 + 递增时间戳**：
+**保存—先删后插 + 递增时间戳**：
 
 ```java
 @Override
@@ -405,7 +405,7 @@ public void saveAll(String conversationId, List<Message> messages) {
 }
 ```
 
-`AtomicLong` 递增时间戳的设计来自官方实现 — 确保同一批次插入的消息有严格的时间顺序（起始值为当前时间，每条 +1ms），查询时按 `created_at` 排序就能还原消息的先后顺序。
+`AtomicLong` 递增时间戳的设计来自官方实现—确保同一批次插入的消息有严格的时间顺序（起始值为当前时间，每条 +1ms），查询时按 `created_at` 排序就能还原消息的先后顺序。
 
 ### 在 InterViewApp 中切换
 
@@ -437,7 +437,7 @@ public InterViewApp(ChatModel dashscopeChatModel, SensitiveWordFilter sensitiveW
 
 ## 新增/修改文件
 
-```
+```java
 src/main/java/com/muzi/muaiagent/chatmemory/
 ├── FileBasedChatMemory.java       # 文件持久化（Kryo 序列化）
 └── DbChatMemoryRepository.java    # 数据库持久化（学习版，手动拆解 Message）
@@ -475,13 +475,13 @@ src/main/java/com/muzi/muaiagent/app/
 
 ## 心得体会
 
-这次深入研究了 Spring AI 的聊天记忆持久化机制，最大的收获是理解了"多态序列化"这个核心问题。
+这次深入研究了 Spring AI 的聊天记忆持久化机制，最大的收获是理解了 " 多态序列化 " 这个核心问题。
 
-之前理所当然地觉得"对象存下来再取出来"是很简单的事，直到认真看了 `Message` 的继承体系才发现：接口类型 + 多个实现类 = 序列化框架不知道怎么还原。Kryo 通过在二进制中嵌入类信息自动解决了这个问题，代价是数据不可读、不可移植；而 Spring AI 官方的 JDBC 实现用了一种更朴素也更优雅的方式 — 不做序列化，拆解为简单字段存储，读取时 switch 手动还原。
+之前理所当然地觉得 " 对象存下来再取出来 " 是很简单的事，直到认真看了 `Message` 的继承体系才发现：接口类型 + 多个实现类 = 序列化框架不知道怎么还原。Kryo 通过在二进制中嵌入类信息自动解决了这个问题，代价是数据不可读、不可移植；而 Spring AI 官方的 JDBC 实现用了一种更朴素也更优雅的方式—不做序列化，拆解为简单字段存储，读取时 switch 手动还原。
 
-这种"拆解 + 手动还原"的思路其实很值得借鉴。在遇到复杂对象的持久化问题时，不要一上来就找序列化框架，先想想：我真的需要完整保存整个对象吗？很多时候只存关键字段就够了，反而更可控、更易维护。
+这种 " 拆解 + 手动还原 " 的思路其实很值得借鉴。在遇到复杂对象的持久化问题时，不要一上来就找序列化框架，先想想：我真的需要完整保存整个对象吗？很多时候只存关键字段就够了，反而更可控、更易维护。
 
-`MessageWindowChatMemory` 的滑动窗口设计也很精巧 — `SystemMessage` 永远不会被淘汰、全量替换的保存策略配合窗口截断。理解了这些细节，在实际项目中调整 `maxMessages` 参数时会更有把握。
+`MessageWindowChatMemory` 的滑动窗口设计也很精巧—`SystemMessage` 永远不会被淘汰、全量替换的保存策略配合窗口截断。理解了这些细节，在实际项目中调整 `maxMessages` 参数时会更有把握。
 
 下一步打算把数据库方式真正跑起来，配合 MySQL 做一次完整的端到端测试，验证重启后对话记忆的恢复效果。
 
