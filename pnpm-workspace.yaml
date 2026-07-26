@@ -1,5 +1,5 @@
 overrides:
-  stylus: git+https://github.com/stylus/stylus.git
+  stylus: 0.64.0
 
 allowBuilds:
   esbuild: true
