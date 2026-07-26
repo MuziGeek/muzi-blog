@@ -65,13 +65,21 @@ default_category: uncategorized
 category_map: # edit for Theme.shoka
   笔记: note
   编程: code
+  AI: ai
+  100test: 100test
+  面试训练营: interview
+  算法: leetcode
+  Spring Boot: spring-boot
   生活: life
   随笔: essays
-  面试训练营: interview
+  项目: project
+  日记: diary
   软件: soft
   学习工具: study-tool
-  100test: 100test
-  AI: AI
+  宠物俱乐部: cat-club
+  木南 AI 智能体: mu-ai-agent
+  木南图库: munan-picture
+  毕设项目生成平台: thesis-project-generator
 
 tag_map:
 

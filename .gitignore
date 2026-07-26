@@ -11,4 +11,5 @@ shokaxTemp/
 package-lock.json
 pnpm-lock.yaml
 db.json
-source/_posts/temp
+source/_posts/temp/*
+!source/_posts/temp/create-blog-note.js
