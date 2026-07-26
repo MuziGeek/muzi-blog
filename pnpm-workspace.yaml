@@ -1,0 +1,8 @@
+overrides:
+  stylus: git+https://github.com/stylus/stylus.git
+
+allowBuilds:
+  esbuild: true
+  hexo-util: true
+  deasync: false
+  puppeteer: false

@@ -50,14 +50,5 @@
     "unlazy": "0.12.1",
     "vue": "^3.5.18",
     "yocto-queue": "^1.2.2"
-  },
-  "pnpm": {
-    "overrides": {
-      "stylus": "git+https://github.com/stylus/stylus.git"
-    },
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "hexo-util"
-    ]
   }
 }
