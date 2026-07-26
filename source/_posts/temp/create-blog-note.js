@@ -32,6 +32,37 @@ function normalizeSlug(value) {
   return normalized;
 }
 
+function hasOuterDoubleQuotes(value) {
+  const title = String(value || '').trim();
+  return title.length >= 2 && title.startsWith('"') && title.endsWith('"');
+}
+
+function hasRepeatedSeriesPrefix(value) {
+  const title = String(value || '').trim();
+  const match = title.match(/^(.+?)\s+-\s+"([\s\S]+)"$/);
+  if (!match) return false;
+  const prefix = match[1].trim();
+  let inner = match[2].trim();
+  while (inner.length >= 2 && inner.startsWith('"') && inner.endsWith('"')) {
+    inner = inner.slice(1, -1).trim();
+  }
+  return inner.startsWith(prefix + ' - ');
+}
+
+function validateTitle(value) {
+  const title = String(value || '').trim();
+  if (!title || !CHINESE_PATTERN.test(title)) {
+    throw new Error('文章标题不能为空，且必须包含中文描述。');
+  }
+  if (hasOuterDoubleQuotes(title)) {
+    throw new Error('标题不要包含外围双引号；YAML 会自动安全转义。');
+  }
+  if (hasRepeatedSeriesPrefix(title)) {
+    throw new Error('标题包含重复的系列前缀；请只保留一次系列编号和描述。');
+  }
+  return title;
+}
+
 function getRepositoryConfig(app) {
   const vaultRoot = app.vault.adapter.basePath;
   const repositoryRoot = path.resolve(vaultRoot, '..', '..');
@@ -124,7 +155,11 @@ function auditExistingPosts(app, slugToLabel) {
     if (segments.some((segment) => !slugToLabel.has(segment))) issues.push(`${file.path}: 目录未配置分类映射`);
     const frontmatter = app.metadataCache.getFileCache(file)?.frontmatter || {};
     if (!frontmatter.date) issues.push(`${file.path}: 缺少 date`);
-    if (!frontmatter.title || !CHINESE_PATTERN.test(String(frontmatter.title))) issues.push(`${file.path}: title 缺少中文描述`);
+    try {
+      validateTitle(frontmatter.title);
+    } catch (error) {
+      issues.push(file.path + ': ' + error.message);
+    }
     const expectedCategories = segments.map((segment) => slugToLabel.get(segment));
     const categories = frontmatter.categories;
     const actualCategories = Array.isArray(categories) && Array.isArray(categories[0]) ? categories[0] : [];
@@ -183,9 +218,10 @@ module.exports = async ({ app, quickAddApi }) => {
       new Notice(error.message);
       return;
     }
-    title = String(await quickAddApi.inputPrompt('中文文章标题') || '').trim();
-    if (!title || !CHINESE_PATTERN.test(title)) {
-      new Notice('文章标题不能为空，且必须包含中文描述。');
+    try {
+      title = validateTitle(await quickAddApi.inputPrompt('中文文章标题'));
+    } catch (error) {
+      new Notice(error.message);
       return;
     }
   }

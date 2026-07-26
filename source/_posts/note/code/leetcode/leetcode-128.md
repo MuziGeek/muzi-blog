@@ -1,5 +1,5 @@
 ---
-title: "LeetCode 128 - \"LeetCode 128 - 最长连续序列\""
+title: "LeetCode 128 - 最长连续序列"
 date: 2026-06-03 23:43:53
 categories:
   - ["笔记", "编程", "算法"]

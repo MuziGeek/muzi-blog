@@ -13,3 +13,4 @@ pnpm-lock.yaml
 db.json
 source/_posts/temp/*
 !source/_posts/temp/create-blog-note.js
+!source/_posts/temp/validate-blog-titles.js

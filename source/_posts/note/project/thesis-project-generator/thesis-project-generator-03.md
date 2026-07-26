@@ -1,5 +1,5 @@
 ---
-title: "\"Thesis Project Generator 开发日记 #3 - AI 多智能体与测试基础设施\""
+title: "Thesis Project Generator 开发日记 #3 - AI 多智能体与测试基础设施"
 date: 2026-04-10 16:00:00
 categories:
   - ["笔记", "项目", "毕设项目生成平台"]

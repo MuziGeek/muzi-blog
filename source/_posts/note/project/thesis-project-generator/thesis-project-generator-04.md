@@ -1,5 +1,5 @@
 ---
-title: "\"Thesis Project Generator 开发日记 #4 - AI 中转站支持与后端收尾\""
+title: "Thesis Project Generator 开发日记 #4 - AI 中转站支持与后端收尾"
 date: 2026-04-13 11:00:00
 categories:
   - ["笔记", "项目", "毕设项目生成平台"]

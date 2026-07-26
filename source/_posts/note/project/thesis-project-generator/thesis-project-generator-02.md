@@ -1,5 +1,5 @@
 ---
-title: "\"Thesis Project Generator 开发日记 #2 - 管理后台与模板管理\""
+title: "Thesis Project Generator 开发日记 #2 - 管理后台与模板管理"
 date: 2026-04-09 18:30:00
 categories:
   - ["笔记", "项目", "毕设项目生成平台"]

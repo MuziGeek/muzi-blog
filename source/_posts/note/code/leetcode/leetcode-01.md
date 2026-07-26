@@ -1,5 +1,5 @@
 ---
-title: "LeetCode 1 - \"LeetCode 1 - \\\"LeetCode 1 - 两数之和\\\"\""
+title: "LeetCode 1 - 两数之和"
 date: 2026-06-03 23:43:53
 categories:
   - ["笔记", "编程", "算法"]

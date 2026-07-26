@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "validate:posts": "node source/_posts/temp/validate-blog-titles.js",
+    "prebuild": "pnpm run validate:posts",
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",

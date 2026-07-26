@@ -1,5 +1,5 @@
 ---
-title: "\"自动化Obsidian文章生成Anki记忆卡片\""
+title: "自动化Obsidian文章生成Anki记忆卡片"
 date: 2025-01-26 15:44:05
 categories:
   - ["软件", "学习工具"]

@@ -1,5 +1,5 @@
 ---
-title: "LeetCode 283 - \"LeetCode 283 - 移动零\""
+title: "LeetCode 283 - 移动零"
 date: 2026-06-09 23:23:36
 categories:
   - ["笔记", "编程", "算法"]

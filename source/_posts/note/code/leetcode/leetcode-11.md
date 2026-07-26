@@ -1,5 +1,5 @@
 ---
-title: "LeetCode 11 - \"LeetCode 11 - 盛最多水的容器\""
+title: "LeetCode 11 - 盛最多水的容器"
 date: 2026-06-09 23:23:36
 categories:
   - ["笔记", "编程", "算法"]

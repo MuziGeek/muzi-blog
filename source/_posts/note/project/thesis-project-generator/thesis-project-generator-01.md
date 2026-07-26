@@ -1,5 +1,5 @@
 ---
-title: "\"Thesis Project Generator 开发日记 #1 - 项目架构与核心功能\""
+title: "Thesis Project Generator 开发日记 #1 - 项目架构与核心功能"
 date: 2026-04-09 15:30:00
 categories:
   - ["笔记", "项目", "毕设项目生成平台"]

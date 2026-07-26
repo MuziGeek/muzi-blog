@@ -1,5 +1,5 @@
 ---
-title: "\"Cat Club 开发日记 #5 - 腾讯云 CloudBase 迁移文档整理\""
+title: "Cat Club 开发日记 #5 - 腾讯云 CloudBase 迁移文档整理"
 date: 2026-02-05 09:59:55
 categories:
   - ["笔记", "项目", "宠物俱乐部"]

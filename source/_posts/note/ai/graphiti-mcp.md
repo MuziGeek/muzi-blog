@@ -1,5 +1,5 @@
 ---
-title: "\"\\\"配置Graphiti知识图谱MCP服务\\\"\""
+title: "配置Graphiti知识图谱MCP服务"
 date: 2025-07-23 11:43:55
 categories:
   - ["笔记", "AI"]
