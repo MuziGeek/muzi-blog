@@ -58,13 +58,6 @@
     { "source": "/note/project/cat-club/cat-club-5/", "destination": "/note/project/cat-club/cat-club-05/", "statusCode": 301 },
     { "source": "/note/project/cat-club/cat-club-6/", "destination": "/note/project/cat-club/cat-club-06/", "statusCode": 301 },
     { "source": "/note/project/cat-club/cat-club-7/", "destination": "/note/project/cat-club/cat-club-07/", "statusCode": 301 },
-    { "source": "/note/project/mu-ai-agnet/mu-ai-agent-1/", "destination": "/note/project/mu-ai-agent/mu-ai-agent-01/", "statusCode": 301 },
-    { "source": "/note/project/mu-ai-agnet/mu-ai-agent-2/", "destination": "/note/project/mu-ai-agent/mu-ai-agent-02/", "statusCode": 301 },
-    { "source": "/note/project/mu-ai-agnet/mu-ai-agent-3/", "destination": "/note/project/mu-ai-agent/mu-ai-agent-03/", "statusCode": 301 },
-    { "source": "/note/project/mu-ai-agnet/mu-ai-agent-4/", "destination": "/note/project/mu-ai-agent/mu-ai-agent-04/", "statusCode": 301 },
-    { "source": "/note/project/mu-ai-agnet/mu-ai-agent-5/", "destination": "/note/project/mu-ai-agent/mu-ai-agent-05/", "statusCode": 301 },
-    { "source": "/note/project/mu-ai-agnet/mu-ai-agent-6/", "destination": "/note/project/mu-ai-agent/mu-ai-agent-06/", "statusCode": 301 },
-    { "source": "/note/project/mu-ai-agnet/mu-ai-agent-7/", "destination": "/note/project/mu-ai-agent/mu-ai-agent-07/", "statusCode": 301 },
     { "source": "/note/project/thesis-project-generator/thesis-project-generator-1/", "destination": "/note/project/thesis-project-generator/thesis-project-generator-01/", "statusCode": 301 },
     { "source": "/note/project/thesis-project-generator/thesis-project-generator-2/", "destination": "/note/project/thesis-project-generator/thesis-project-generator-02/", "statusCode": 301 },
     { "source": "/note/project/thesis-project-generator/thesis-project-generator-3/", "destination": "/note/project/thesis-project-generator/thesis-project-generator-03/", "statusCode": 301 },
@@ -77,8 +70,7 @@
     { "source": "/categories/note/%E9%A1%B9%E7%9B%AE/page/2/", "destination": "/categories/note/project/page/2/", "statusCode": 301 },
     { "source": "/categories/note/%E9%A1%B9%E7%9B%AE/%E5%AE%A0%E7%89%A9%E4%BF%B1%E4%B9%90%E9%83%A8/", "destination": "/categories/note/project/cat-club/", "statusCode": 301 },
     { "source": "/categories/note/%E9%A1%B9%E7%9B%AE/%E6%AF%95%E8%AE%BE%E9%A1%B9%E7%9B%AE%E7%94%9F%E6%88%90%E5%B9%B3%E5%8F%B0/", "destination": "/categories/note/project/thesis-project-generator/", "statusCode": 301 },
-    { "source": "/categories/note/project/mu-ai-agnet/", "destination": "/categories/note/project/mu-ai-agent/", "statusCode": 301 },
     { "source": "/categories/%E9%A1%B9%E7%9B%AE/", "destination": "/categories/note/project/", "statusCode": 301 },
-    { "source": "/categories/%E9%A1%B9%E7%9B%AE/mu-ai-agnet/", "destination": "/categories/note/project/mu-ai-agent/", "statusCode": 301 }
+    { "source": "/categories/%E9%A1%B9%E7%9B%AE/mu-ai-agent/", "destination": "/categories/note/project/mu-ai-agent/", "statusCode": 301 }
   ]
 }
