@@ -4,11 +4,16 @@
   "private": true,
   "scripts": {
     "validate:posts": "node source/_posts/temp/validate-blog-titles.js",
-    "prebuild": "pnpm run validate:posts",
+    "theme:sync-sources": "node tooling/sync-shokax-sources.mjs",
+    "theme:prepare": "node tooling/prepare-shokax.mjs",
+    "theme:verify": "node tooling/verify-shokax-scripts.mjs",
+    "theme:check": "node tooling/check-shokax-update.mjs",
+    "prebuild": "pnpm run validate:posts && pnpm run theme:prepare && pnpm run theme:verify",
     "build": "hexo generate",
     "clean": "hexo clean",
     "deploy": "hexo deploy",
-    "server": "hexo server"
+    "predeploy": "pnpm run validate:posts && pnpm run theme:prepare && pnpm run theme:verify",
+    "server": "pnpm run theme:prepare && pnpm run theme:verify && hexo server"
   },
   "hexo": {
     "version": "7.3.0"

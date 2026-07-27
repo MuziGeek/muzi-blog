@@ -20,5 +20,4 @@ test.ts
 *.d.ts
 *.tsbuildinfo
 !/toolbox/*
-!/scripts/**/*.js
 *.exe

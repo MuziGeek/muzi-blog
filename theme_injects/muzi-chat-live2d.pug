@@ -1,0 +1,31 @@
+link(rel="stylesheet" href=chatWidgetCss)
+link(rel="stylesheet" href=shokaxCustomCss)
+script(src=chatWidgetJs)
+if chatAssistant.enable
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.ChatWidget) {
+        ChatWidget.init({
+          endpoint: !{JSON.stringify(chatAssistant.endpoint || '')},
+          avatar: !{JSON.stringify(chatAssistant.avatar || '')},
+          theme: 'auto',
+          blogUrl: !{JSON.stringify(siteUrl)}
+        });
+      }
+    });
+
+if chatAssistant.enable && live2d.enable
+  script(src="https://unpkg.com/oh-my-live2d@latest/dist/index.min.js" onerror="console.warn('Live2D CDN load failed')")
+  script(src=live2dJs)
+  script.
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof window.initMuziLive2D !== 'function') {
+        console.warn('Muzi Live2D initializer is unavailable');
+        return;
+      }
+
+      window.initMuziLive2D({
+        lightModel: !{JSON.stringify(live2d.lightModel || '')},
+        darkModel: !{JSON.stringify(live2d.darkModel || '')}
+      });
+    });

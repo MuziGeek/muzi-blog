@@ -1,0 +1,56 @@
+:root {
+  --nav-bg: transparent;
+  --waline-theme-color: var(--primary-color) !important;
+  --waline-active-color: #ff5c75 !important;
+}
+
+html[data-theme='dark'] {
+  --nav-bg: transparent;
+}
+
+.wl-power {
+  display: none;
+}
+
+.cw-toggle-container {
+  display: none !important;
+}
+
+#oml2d-tips {
+  right: 20px !important;
+  min-width: 120px !important;
+  max-width: 180px !important;
+  margin-bottom: 120px !important;
+  padding: 12px 16px !important;
+  color: #333 !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  text-align: center !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: none !important;
+  border-radius: 18px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06) !important;
+  transform: translateX(-120px) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+html[data-theme='dark'] #oml2d-tips {
+  color: #e0e0e0 !important;
+  background: rgba(50, 50, 60, 0.92) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), 0 1px 4px rgba(0, 0, 0, 0.15) !important;
+}
+
+#oml2d-tips::after {
+  position: absolute !important;
+  right: auto !important;
+  bottom: -8px !important;
+  left: 50% !important;
+  width: 16px !important;
+  height: 16px !important;
+  margin-left: -8px !important;
+  content: '' !important;
+  background: inherit !important;
+  border-radius: 0 0 4px 0 !important;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.05) !important;
+  transform: rotate(45deg) !important;
+}
