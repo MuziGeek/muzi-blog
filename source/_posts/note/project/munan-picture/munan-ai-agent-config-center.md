@@ -155,13 +155,13 @@ AI service 内部管理接口：
 验证命令：
 
 ```bash
-cd D:\GitProject\munan_picture\munan-vue
+cd munan-vue
 npm run type-check
 
-cd D:\GitProject\munan_picture\munan-ai
+cd munan-ai
 mvn -pl munan-ai-service -am test
 
-cd D:\GitProject\munan_picture\munan-biz
+cd munan-biz
 mvn test
 ```
 
