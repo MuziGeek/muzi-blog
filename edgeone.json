@@ -1,4 +1,5 @@
 {
+  "buildCommand": "pnpm run prebuild && pnpm exec hexo generate",
   "redirects": [
     { "source": "/note/AI/Graphiti%20MCP/", "destination": "/note/ai/graphiti-mcp/", "statusCode": 301 },
     { "source": "/note/AI/%E6%9C%A8%E5%8D%97AI%E6%99%BA%E8%83%BD%E4%BD%93%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/", "destination": "/note/project/munan-picture/munan-ai-agent-config-center/", "statusCode": 301 },

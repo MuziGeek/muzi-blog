@@ -35,9 +35,15 @@ for (const [relative, expectedCode] of expected) {
   }
 }
 
-const trackedFiles = execFileSync('git', ['ls-files', '--', 'themes/shokax/scripts'], { encoding: 'utf8' })
-  .split(/\r?\n/)
-  .filter(Boolean);
+let trackedFiles = [];
+try {
+  trackedFiles = execFileSync('git', ['ls-files', '--', 'themes/shokax/scripts'], { encoding: 'utf8' })
+    .split(/\r?\n/)
+    .filter(Boolean);
+} catch (error) {
+  // 构建容器里可能没有 git（例如按压缩包解出来的构建目录），此时跳过该检查而不是让构建失败。
+  console.warn(`Skipped the "generated scripts must not be tracked" check: git is unavailable (${error.code || error.message}).`);
+}
 if (trackedFiles.length > 0) {
   failures.push(`runtime scripts must not be tracked by Git: ${trackedFiles.join(', ')}`);
 }

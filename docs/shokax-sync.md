@@ -12,6 +12,8 @@ pnpm run theme:check
 
 每次生成、预览或部署前，运行 `pnpm run theme:prepare`。Hexo 会把主题 `scripts/` 中的所有文件当作插件加载，不能与 TypeScript 源码共存；因此官方服务端 TypeScript 源码保存在 `vendor/shokax-scripts/`，该命令先在临时目录完整转译，再替换主题目录中的 CommonJS 脚本。源码受版本控制，生成的 JavaScript 保持忽略且不得被 Git 跟踪。
 
+远程构建（EdgeOne）的构建命令固定在 `edgeone.json` 的 `buildCommand` 里，值为 `pnpm run prebuild && pnpm exec hexo generate`。平台自动检测出来的是 `pnpm exec hexo generate`，它不会经过 `package.json` 的 `build`/`prebuild` 脚本，主题脚本就不会被转译，站点会在渲染 `{% linksfile %}` 这类标签时报 `unknown block tag`。改动 `prebuild` 的步骤时无需同步改 `edgeone.json`。
+
 以后更新主题时，先以 subtree 同步官方主题。官方 TypeScript 会暂时回到 `themes/shokax/scripts/`；此时必须依次运行 `pnpm run theme:sync-sources`、`pnpm run theme:prepare` 和 `pnpm run theme:verify`。`theme:sync-sources` 会完整镜像官方脚本源码到 `vendor/shokax-scripts`，再从活动目录移走源码；`theme:prepare` 会清理官方已删除脚本对应的陈旧 JS。除此之外，`themes/shokax` 应与官方提交一致。
 
 同步后至少执行：
