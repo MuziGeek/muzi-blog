@@ -1,4 +1,4 @@
-import { mkdir, mkdtemp, readdir, rename, rm, writeFile } from 'node:fs/promises';
+import { mkdir, mkdtemp, readdir, rename, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import {
   collectFiles,
@@ -36,7 +36,11 @@ try {
   }));
 
   await rm(backupRoot, { recursive: true, force: true });
-  await rename(runtimeRoot, backupRoot);
+  // 首次生成时 runtimeRoot 还不存在，没有东西可以备份
+  const runtimeExists = await stat(runtimeRoot).then(() => true, () => false);
+  if (runtimeExists) {
+    await rename(runtimeRoot, backupRoot);
+  }
   await rename(stagingRuntimeRoot, runtimeRoot);
   await rm(backupRoot, { recursive: true, force: true });
   console.log(`Prepared ${sourceFiles.length} ShokaX scripts from vendored TypeScript sources.`);

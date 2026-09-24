@@ -8,7 +8,14 @@ export const sourceRoot = path.join(projectRoot, 'vendor', 'shokax-scripts');
 export const runtimeRoot = path.join(themeRoot, 'scripts');
 
 export async function collectFiles(directory) {
-  const entries = await readdir(directory, { withFileTypes: true });
+  let entries;
+  try {
+    entries = await readdir(directory, { withFileTypes: true });
+  } catch (error) {
+    // themes/shokax/scripts 是生成产物、不进 Git，干净的检出里第一次跑时它还不存在
+    if (error.code === 'ENOENT' || error.code === 'ENOTDIR') return [];
+    throw error;
+  }
   const files = await Promise.all(entries.map(async (entry) => {
     const entryPath = path.join(directory, entry.name);
     if (entry.isDirectory()) return collectFiles(entryPath);
