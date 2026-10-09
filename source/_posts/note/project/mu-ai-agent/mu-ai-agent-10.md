@@ -47,12 +47,12 @@ chatClient = ChatClient.builder(chatModel)
 
 预检索就是在向量检索**之前**先对 query 做加工，把它变成一条「检索友好」的完整问题。Spring AI 1.1.8 提供了四类手段：
 
-| 能力 | 实现类 | 干的事 |
-| --- | --- | --- |
-| 查询压缩 | `CompressionQueryTransformer` | 把整段对话历史压成一句可独立检索的问题 |
-| 查询重写 | `RewriteQueryTransformer` | 把口语化提问润色成检索友好的措辞 |
-| 查询翻译 | `TranslationQueryTransformer` | 翻译成目标语言后再检索 |
-| 多查询扩展 | `MultiQueryExpander` | 一条问题扩成若干变体，各自检索后合并去重 |
+| 能力    | 实现类                           | 干的事                  |
+| ----- | ----------------------------- | -------------------- |
+| 查询压缩  | `CompressionQueryTransformer` | 把整段对话历史压成一句可独立检索的问题  |
+| 查询重写  | `RewriteQueryTransformer`     | 把口语化提问润色成检索友好的措辞     |
+| 查询翻译  | `TranslationQueryTransformer` | 翻译成目标语言后再检索          |
+| 多查询扩展 | `MultiQueryExpander`          | 一条问题扩成若干变体，各自检索后合并去重 |
 
 四类能力都藏在 `spring-ai-rag` 这个模块里，包路径是 `org.springframework.ai.rag.preretrieval.query.*`——**不是** `spring-ai-advisors-vector-store`，两个模块职责完全不同。
 
